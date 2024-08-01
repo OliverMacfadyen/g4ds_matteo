@@ -1,0 +1,120 @@
+##########################################################
+#                                                        #
+#            DS20K Neutron Bg Simulation                 #
+#                                                        #
+##########################################################
+
+
+#PreInit:
+
+#  Define the level of verbosity of messages
+# options: debugging, development, trace, routine, warning, error
+# default: routine
+/ds/manager/log routine
+/ds/manager/verbosity 0
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 500
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 0
+
+# the following command replace TMB_fraction and applies to all the scintillators. As a reference, the following table (scales~linearly):
+#                        mass_fraction   mean_capture_time 
+#BoronScintillator             0.2            5 us 
+#GdScintillator             0.0014           35 us
+#Li6Scintillator           7.33e-3           40 us
+#OrtoCarbonScintillator      0.085            3 us
+#/ds/manager/scint_mass_fraction 0.2
+
+#  Detector configuration: 
+#  DS50  TPC+NV+WT (0) - DS50 TPC+NW (1) - DS50 TPC (2) - DS50 NV+WT (3) 
+#  LAr Tester (4) -  DS10 TPC (5) -  Scintillator tester (6)
+#  DSG2 TPC + NV + WT (7) - DSG3 TPC + NV (8) - DS5k TPC (9)
+#  DS20k TPC + WT (10)
+
+
+/ds/detector/configuration 10
+
+/ds/detector/wt_material Water
+/ds/detector/wt_radius  7 m 
+/ds/detector/wt_height  12 m 
+
+#to build the spherical LSV 
+/ds/detector/ds20lsv_detector 1 
+/ds/detector/ds20lsv_diameter 8 m 
+#scintillator options: GdSCintillator Li6Scintillator OrtoCarbonScintillator BoronScintillator
+/ds/detector/scintillator BoronScintillator
+
+#to put an acrylic spherical vessel and separate LSV in scintillator + buffer 
+/ds/detector/ds20acrylicVessel_diameter 6 m 
+
+/ds/detector/ExtLarScintillating 0
+/ds/detector/vetoyieldfactor 0.0
+
+# Define output file name
+/run/filename lsvDS20k
+
+# Define  random seed
+/run/heprandomseed 127667
+
+#Define the hadronic physics list (none QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list HP
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+/ds/physics/optics 3
+
+/ds/physics/tuned200V   1
+/ds/physics/killS1S2 1
+
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+#PostInit:
+
+
+/ds/generator/select G4Gun
+
+/ds/generator/particle  neutron
+#/ds/generator/energy  0.1 eV
+
+
+/ds/generator/bgd_reflector 1
+#/ds/generator/bgd_windows 
+#/ds/generator/bgd_pmt_photocathode
+#/ds/generator/liquidargon
+#/ds/generator/bgd_cryostats 1
+#/ds/generator/bgd_sipm 1
+#/ds/generator/bgd_pmt_stem 1
+#/ds/generator/bgd_rings 1
+#/ds/generator/bgd_grid 1
+#/ds/generator/gaspocketdistribution
+#/ds/generator/tpcdistribution 1
+#/ds/generator/veto_pmts 1
+#/ds/generator/veto_shpere 1
+
+
+
+/ds/generator/energyfile  ../data/physics/U238Teflon.dat
+#/ds/generator/energyfile ../data/physics/U238BoroSilicate.dat
+#/ds/generator/energyfile ../data/physics/Th232Teflon.dat
+#/ds/generator/energyfile ../data/physics/Th232StainlessSteel.dat
+#/ds/generator/energyfile ../data/physics/Th232FusedSilica.dat
+#/ds/generator/energyfile ../data/physics/Th232BoroSilicate.dat
+#/ds/generator/energyfile ../data/physics/U238U235Th232StainlessSteel.dat
+#/ds/generator/energyfile ../data/physics/U238Teflon.dat
+#/ds/generator/energyfile ../data/physics/U238StainlessSteel.dat
+#/ds/generator/energyfile ../data/physics/U238FusedSilica.dat
+
+
+
+# Define the number of events
+/run/beamOn 50000
+
+
+
+
+

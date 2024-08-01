@@ -1,0 +1,56 @@
+#######################################
+#                                     #
+#         Basic G4DS  Macro           #
+#                                     #
+#######################################
+
+#  Define the level of verbosity of messages
+# options: debugging, development, trace, routine, warning, error
+# default: routine
+/ds/manager/log trace
+#/ds/manager/log development
+/ds/manager/verbosity 0
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 1000
+/ds/manager/writephotons 1
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 0
+
+#Detector configuration: TPC+NV+WT (0) - TPC+NW (1) - TPC (2) - NV+WT (3)
+/ds/detector/configuration proto0
+/ds/detector/ds20cryo_tpcEdge 25 cm
+/ds/detector/ds20cryo_tpcHeight 12 cm
+/ds/detector/ds20_AcrylicWalls_Thick 5 cm
+/ds/detector/ds20sipm_offset 1 cm
+/ds/detector/protoproto/bottomsipm 0
+
+# Define output file name
+/run/filename s1s2proto
+
+# Define  random seed
+/run/heprandomseed 12345679
+
+#Define the hadronic physics list (none HP QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list none
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+/ds/physics/optics 3
+#/ds/physics/killS2 1
+#/ds/physics/killS1S2 1
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+/ds/generator/select G4Gun
+
+/ds/generator/particle  e-
+/ds/generator/direction  0 0 1
+/ds/generator/position   0 0 0 cm
+/ds/generator/energy   10 keV
+#/ds/generator/tpcdistribution 1
+#/ds/generator/bgd_reflector 1
+
+# Define the number of events
+/run/beamOn 100

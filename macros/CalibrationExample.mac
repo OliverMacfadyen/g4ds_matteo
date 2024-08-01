@@ -1,0 +1,60 @@
+#/ds/manager/log routine
+/ds/manager/log development
+/ds/manager/verbosity 0
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 1
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 0
+
+/ds/detector/configuration ds20k
+/ds/detector/ds20cryo_tpcEdge 145.1 cm
+/ds/detector/ds20cryo_tpcHeight 350.5 cm
+/ds/detector/ds20_AcrylicWalls_Thick 5 cm
+/ds/detector/ds20_LArBuffers_Thick 40 cm
+/ds/detector/ds20_VetoShell_Thick 10 cm
+/ds/detector/ds20_TPB_Thick 0.1 mm
+#/ds/detector/ds20_TPB_Layers 1111
+/ds/detector/ds20_TPB_Layers 0000
+/ds/detector/ExtLarScintillating 0
+/ds/detector/vetoyieldfactor 0.0
+
+#placemnet of eutron veto SiPMs
+/ds/detector/ds20k_SiPMs 0
+
+/ds/detector/gantry/configuration 1
+/ds/detector/gantry/pipeID 3.0 cm
+/ds/detector/gantry/pipeWall 1.5 mm
+/ds/detector/gantry/pipeBendingR 20 cm        	#CAD design has 40cm but it does not fit in the model. Max 20cm to avoid overlap with TPC bottom corner.
+#/ds/detector/gantry/pipeBendingR 10 cm			#need small bending radius to fit through vertical hole in the shield
+/ds/detector/gantry/distanceTPCside 1.0 cm   	#G4DS-master needs at least ~4.5cm to avoid overlap
+/ds/detector/gantry/distanceTPCbottom 8.25 cm
+/ds/detector/gantry/distanceBtwPipes 3 mm
+/ds/detector/gantry/surface 0
+/ds/detector/gantry/surfaceOption 1
+/ds/detector/gantry/shield 0
+/ds/detector/gantry/shieldThickness 10.0 cm
+/ds/detector/gantry/shieldHeight 15.0 cm
+/ds/detector/gantry/shieldOffset 1.0 cm
+/ds/detector/gantry/shieldMaterial 1
+
+/run/filename CalibrationExample
+
+#/run/heprandomseed $count
+
+/ds/physics/hadronic_list HP
+/ds/physics/em_list livermore
+/ds/physics/optics 0
+
+/run/initialize
+
+# DD isotropic
+/ds/generator/select     G4Gun
+/ds/generator/postype    Volume
+/ds/generator/posshape   Sphere
+/ds/generator/sphere_radius 0.1 mm
+/ds/generator/set_center 0.0 -1887.26 0.0 mm
+/ds/generator/particle   neutron
+/ds/generator/energy	 2450 keV
+
+/run/beamOn 1

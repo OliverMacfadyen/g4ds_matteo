@@ -1,0 +1,33 @@
+
+g++ g4dart.C -o g4dart `root-config --cflags --glibs`
+echo 'g4dart compiled....'
+
+g++ g4rootered.C -o g4rooter `root-config --cflags --glibs`
+echo 'g4rooter compiled....'
+
+g++ g4merger.C -o g4merger `root-config --cflags --glibs`
+echo 'g4merger compiled....'
+
+g++ g4rootered_full.C -o g4rooter_full `root-config --cflags --glibs`
+echo 'g4rooter full compiled....'
+
+g++ g4rootered_nDS20k.C -o g4rooter_nDS20k `root-config --cflags --glibs`
+echo 'g4rooter nDS20k compiled....'
+
+g++ g4rootered_nDS20k_update.C -o g4rooter_nDS20k_update `root-config --cflags --glibs`
+echo 'g4rooter nDS20k update compiled....'
+
+g++ g4rootered_lm.C -o g4rooter_lm `root-config --cflags --glibs`
+echo 'g4rooter LM DS20k compiled....'
+
+g++ g4rootered_prereco.C -o g4rooter_prereco `root-config --cflags --glibs`
+echo 'g4rooter prereco compiled....'
+
+g++ g4rootered_reco.C -o g4rooter_reco `root-config --cflags --glibs`
+echo 'g4rooter reco compiled....'
+
+g++ g4rootered_nDS20k_VETO.C -o g4rooter_nDS20k_VETO `root-config --cflags --glibs`
+echo 'g4rooter processor_v2 compiled....'
+
+chmod +x make_prereco.pl
+

@@ -1,0 +1,57 @@
+##########################################################
+#                                                        #
+#                   G4Gun Standard Macro                 #
+#                                                        #
+##########################################################
+
+
+#PreInit:
+
+#  Define the level of verbosity of messages
+# options: debugging, development, trace, routine, warning, error
+# default: routine
+/ds/manager/log trace
+/ds/manager/verbosity 2
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 10
+/ds/manager/writephotons 0
+
+#Define if geometry has to be exported in GDML file geo.root
+/ds/manager/GDML 0
+
+#Detector configuration: TPC+NW+WT (0) - TPC+NW (1) - TPC (2)
+/ds/detector/configuration ds50_full
+
+# Define output file name
+/run/filename outcosmicray
+
+# Define  random seed
+/run/heprandomseed 12345679
+
+
+#Define the hadronic physics list (none QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list QGSP_BERT_HP
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+#PostInit:
+
+/ds/generator/select CosmicRayMuons
+
+/ds/generator/cosmicray/height 8.1 m
+/ds/generator/cosmicray/radius 8. m
+/ds/generator/cosmicray/depth 3700. m
+/ds/generator/cosmicray/index 3.7
+/ds/generator/cosmicray/energyLow 1. GeV
+/ds/generator/cosmicray/energyUp 10. TeV
+/ds/generator/cosmicray/filename zenith_azimuth.dat
+
+
+
+# Define the number of events
+/run/beamOn 1

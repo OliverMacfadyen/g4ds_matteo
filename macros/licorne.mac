@@ -1,0 +1,63 @@
+# To run with visualization: ./g4ds ../macros/licorne.mac Qt
+
+/ds/manager/log trace
+/ds/manager/verbosity 0
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 100
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 0
+
+# Define output file name
+/run/filename outLicorne_10ms_50cm_400ns
+
+# Define  random seed
+/run/heprandomseed 127677
+
+#Define the hadronic physics list (none HP QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+# /ds/physics/hadronic_list HP
+/ds/physics/hadronic_list none
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+/ds/physics/tuned200V   1
+/ds/physics/killS1S2 1
+
+#Detector configuration:
+/ds/detector/configuration licorne
+/ds/detector/licorne/exp_hall 0
+/ds/detector/licorne/activate_wall 0
+/ds/detector/licorne/distance 1 m
+#/ds/detector/licorne/theta 10 degree
+/ds/detector/licorne/phi1 0 degree
+/ds/detector/licorne/phi2 190 degree
+/ds/detector/licorne/nuclear_energy 40 keV
+/ds/detector/licorne/neutron_energy 1.5 MeV
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+#PostInit:
+
+# /ds/generator/select Licorne
+# /ds/generator/licorne/position -50 0 0 cm
+# /ds/generator/licorne/gamma_neutron_ratio 0.01
+# /ds/generator/licorne/run_time 10 ms
+# /ds/manager/time_cut 1.01 ms
+# /ds/generator/licorne/pulse_mode    1
+# /ds/generator/licorne/neutron_rate  30 kilohertz
+# /ds/generator/licorne/pulse_period  400 ns
+# /ds/generator/licorne/pulse_width   1.5 ns
+
+/ds/generator/select G4Gun
+#/ds/generator/particle  neutron
+/ds/generator/particle  geantino
+/ds/generator/energy	1500. keV
+# /ds/generator/position  -20 0 0 cm
+/ds/generator/position  -20 0 0 cm
+/ds/generator/direction  1.0 0.0  0.0
+
+# Define the number of events
+/run/beamOn 1

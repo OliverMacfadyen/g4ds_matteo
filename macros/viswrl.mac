@@ -1,0 +1,73 @@
+/ds/manager/log development
+/ds/manager/verbosity 1
+/ds/manager/checkoverlap 1
+/ds/manager/eventcounter 10
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 0
+
+/run/filename outputwrl
+/run/heprandomseed 12345678
+
+# Detector configurations:
+# ds50_full ds50_tpc_veto ds50_tpc ds20k ds20k_tpc dsproto dsproto0 red_tpc dart ardm tester
+
+/ds/detector/configuration ds20k
+/ds/detector/ExtLarScintillating 0
+/ds/detector/vetoyieldfactor 0.0
+
+#placemnet of eutron veto SiPMs
+/ds/detector/ds20k_SiPMs 0
+
+/ds/physics/hadronic_list none
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+/ds/generator/select G4Gun
+/ds/generator/particle  geantino
+/ds/generator/energy	400 keV
+/ds/generator/position  0.0 0.0 -13 m
+/ds/generator/direction 0. 0. 1.0
+
+#################################################
+# ##############     viewer      ############## #
+#
+# TIPS FOR WRL FILES
+# export G4VRMLFILE_MAX_FILE_NUM = 1
+# for the Maximum number of files in the destination directory to be eq to 1 (overwrite the last g4_XX.wrl file)
+# for mac users, scp and view the wrl file with InstantPlayer (http://www.instantreality.org/)
+
+# Create empty scene ("world" is default)
+/vis/scene/create
+# Add volume to scene
+/vis/scene/add/volume
+#
+/vis/viewer/set/lineSegmentsPerCircle 64
+#
+# Create a scene handler for a specific graphics system
+# Edit the next line(s) to choose another graphic system
+/vis/sceneHandler/create VRML2FILE
+# Create a viewer
+/vis/viewer/create
+/vis/scene/notifyHandlers
+
+# for drawing the tracks
+# if too many tracks cause core dump => storeTrajectory 0
+/vis/viewer/set/autoRefresh true
+/tracking/storeTrajectory 4
+/vis/scene/add/trajectories smooth
+/vis/scene/add/hits
+
+#*********************
+/run/initialize
+#*********************
+
+/vis/scene/add/axes 0 0 0 1 m
+#/vis/viewer/set/viewpointVector -1 0 -0.8 m
+/run/beamOn 1
+
+
+/ds/generator/position  0.0 0.0 0 m
+/ds/generator/direction 1. 0. 0.0
+/run/beamOn 1

@@ -1,0 +1,75 @@
+#--------------------------------------------------
+# ARIS-ER experiment at UC Davis
+#--------------------------------------------------
+# To run with visualization:
+#   ./g4ds ../macros/ariser.mac Qt
+#--------------------------------------------------
+
+/ds/manager/log development
+/ds/manager/verbosity 0
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 1
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 0
+
+#Visual
+/vis/open OGL 600x600-0+0
+/vis/viewer/set/autoRefresh false
+/vis/verbose errors
+/vis/viewer/set/style surface
+/vis/viewer/set/viewpointThetaPhi 70 -90 deg
+/vis/viewer/set/lightsThetaPhi 70 -90 deg
+# /vis/viewer/addCutawayPlane 0 0 0 cm 0 1 0
+
+# Define output file name
+/run/filename outAriser
+
+# Define random seed
+/run/heprandomseed 12345
+
+#Define the hadronic physics list (none HP QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+# /ds/physics/hadronic_list HP
+/ds/physics/hadronic_list none
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+/ds/physics/tuned200V   1
+/ds/physics/killS1S2 1
+
+#Detector configuration:
+/ds/detector/configuration ariser
+/ds/detector/ariser/source_distance_to_cryo 5 cm
+/ds/detector/ariser/bege_distance_to_cryo 3 cm
+/ds/detector/ariser/bege_angle 20 deg
+/ds/manager/writefilter 1
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+#PostInit:
+#/ds/generator/select G4Gun
+#/ds/generator/particle geantino
+#/ds/generator/energy 100 keV
+#/ds/generator/position 0 0 20 cm
+#/ds/generator/direction 0 0 -1
+
+/ds/generator/select RDM
+/ds/stack/select RDM
+/ds/generator/rdm/ion 22 11 0
+/ds/generator/ariser_source 1
+
+# Visualization attributes
+/vis/verbose warnings
+/vis/drawVolume worlds
+/vis/scene/add/trajectories smooth
+/vis/scene/endOfEventAction accumulate
+/vis/scene/add/axes 0 0 0 10 cm
+/vis/viewer/set/autoRefresh true
+
+# Define the number of events
+/run/beamOn 1
+
+/vis/viewer/flush

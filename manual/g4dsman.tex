@@ -1,0 +1,1241 @@
+\documentclass[twocolumn, 10pt]{article}
+\usepackage{graphicx}% Include figure files
+%\usepackage{dcolumn}% Align table columns on decimal point
+\usepackage{bm}% bold math
+\usepackage{graphicx}
+\usepackage{times}
+
+%\bibliographystyle{apsrev}
+
+%--------------------------------- begin document  -------------------------------
+
+\begin{document}
+
+%--------------------------------- frontmatter ---------------------------------
+
+
+\title{G4DS Man Pages}
+\author{Davide Franco\thanks{dfranco@in2p3.fr}, Anselmo Meregaglia\thanks{anselmo.meregaglia@cern.ch},  Stefano Perasso, \\ Claudio Giganti \thanks{cgiganti@lpnhe.in2p3.fr}, and Paolo Agnes \thanks{pagnes@in2p3.fr}}
+
+\date{\today}
+\maketitle
+
+\tableofcontents
+
+\section{Short start up}
+To run g4ds you have first to set the proper environment. Depending on which shell you are using (bash or tcsh) you can
+look at the configuration files (.sh or .chs) present in the g4ds folder: configDarkSide.sh and configDarkSide.csh are
+done for the linux  cluster (Lyon) in France and configDarkSide\_argus.sh and configDarkSide\_argus.csh for MacOS
+cluster (argus) at Princeton. configDarkside.sh also works for the ds50srv01 server at Fermilab. If you work in a different cluster, please edit and adapt the configuration file. Then, set the environment with:\\
+ \textit{source configDarkSidexxx.sh} \\
+and compile it with: \textit{make} \\
+ If you work in a linux cluster, the executable \textit{g4ds} will appear in \textit{Linux-g++}, in MacOS in \textit{Darwin-g++}. All the macro files (.mac) are in \textit{Linux-g++}. \\
+To run g4ds, goes to the executable directory and make:\\
+\textit{./g4ds xxx.mac}  (Linux)\\
+\textit{./g4ds ../Linux-g++/xxx.mac}  (MacOS)\\
+The most general macro is \textit{run.mac}. To modify the detector configuration, physics list, generator, and manager edit the macro file and use the commands listed in this manual.\\
+{\bf{The code is still in a development phase and must be debugged. Please, report any bug or strange behavior to the developers, in order to improve the code.}}
+
+ 
+
+
+\section{Convert binary to root file}
+To read the output binary file (.fil extension) and to generate the correspondent root file, compile  (only the first time) the rooter generator with the command
+\textit{compile\_rooter} in the Linux-g++ folder (without \textit{./}); then,  run \textit{g4rooter filename.fil} (to print all the options
+run \textit{g4rooter} without the filename).
+
+\section{Tips}
+\begin{itemize}
+\item The use of hadronic physics implies a long time to construct the detector in the simulation. If you work at low enegies,
+de-activate it by using the command: /ds/physics/hadronic\_list none .
+\item The amount of S2 light is huge with respect to S1. Tracking all the photons requires time. To give an idea, a 100 keV electron in
+the TPC is simulated in about 20 s. If S2 light is not needed, you can disable it using /ds/physics/killS2 1, or you can scale the
+light by a factor X, by using /ds/physics/scaleS2 X. A 100 keV electron, without S2 light, requires a fraction of a second. 
+\item 
+By default, g4ds stores in the binary file only information about the primary particle and the photoelectrons. There are 4 other options: saving daughters (secondary particles), energy depositions, generated photons, and thermal electrons. The 3 commands are:\\
+/ds/manager/writephotons 1\\
+/ds/manager/writedaughters 1\\
+/ds/manager/writedeposits 1\\
+/ds/manager/writethermalelectrons 1\\
+Be careful: the number of photons can exceed the maximum number of photons storable by g4rooter. Use /ds/manager/writephotons 1 only when you generate single photons or you work with a very low number of generated photons. 
+
+\end{itemize}
+
+\section{The Mac-File}
+The macro file (mac-file) is an ASCII-file, containing user-frendly instructions for running g4ds.\\
+Mac file properties include: 
+\begin{itemize}
+\item The MC is fully configurable with macro commands. 
+\item Running different simulations simultaneously, one per each mac file, is possible without interference (output names are automatically changed).
+\item Modifying the mac  file, you do not need to re-compile the program.
+\end{itemize}
+{\bf{Be careful.  The mac file is structured into 2 parts, divided by the command: /run/initialize. Before this command,
+set the detector, manager, run and physics properties. After, everything concerns the generator and the number of events.}}\\
+All commands are listed, with a short description, in the next sections.\\ 
+
+
+\section{Run}
+
+\begin{itemize}
+\item \textbf{/run/filename xxx} \\
+type: optional \\
+default: output\\
+description: set the output filename (without extension!). 
+G4ds will produce two output files: xxx.log and xxx.fil.
+The first is the log file (with both input and output information); the latter is the binary. 
+If xxx.log already exists, G4ds will change xxx in xxx\_vN (N = 1,2,3,...). Be careful: the re-naming does not depend on the binary file!\\
+
+\item \textbf{/run/autoSeed xxx} \\
+type: optional \\
+default: true\\
+description: set the random seed from the systime\\
+options: true or false \\
+
+\item \textbf{/run/heprandomseed xxx}\\
+type: optional \\
+default: no default\\
+description: set the user-defined random seed. It turns off autoSeed.\\
+\end{itemize}
+
+
+\section{Manager}
+
+\begin{itemize}
+
+\item \textbf{/ds/manager/log xxx} \\ 
+type: optional \\
+default: routine\\
+description: set the message priority\\
+options: debugging,  trace,  routine,  warning,  error,  fatal.\\
+
+
+\item \textbf{/ds/manager/checkoverlap xxx}\\
+type: optional mandatory\\
+default: 0\\
+description: check if there exists any detector overlap \\
+candidates: \\
+
+\item \textbf{/ds/manager/GDML xxx}\\
+type: optional\\
+default: 0 \\
+description: Switch ON (1) or OFF (0) GDML to export geometry in a .gdml file \\
+candidates: 0, 1\\
+
+\item \textbf{/ds/manager/writephotons xxx}\\
+type: optional \\
+default: 0 \\
+description: store photons\\
+
+\item \textbf{/ds/manager/writedaughters xxx}\\
+type: optional \\
+default: 0 \\
+description: store deposits\\
+
+\item \textbf{/ds/manager/writedeposits xxx}\\
+type: optional \\
+default: 0\\
+description: store daughters\\
+
+\item \textbf{/ds/manager/writedethermalelectrons xxx}\\
+type: optional \\
+defult: 0 \\ 
+description: store thermal electrons number and drift time (dep\_pdg set to -1) \\
+
+\item \textbf{/ds/manager/eventcounter xxx}\\
+type: optional \\
+default: 100 \\
+description: print info each xxx events\\
+candidates: \\
+
+\item \textbf{/ds/manager/verbosity xxx}\\
+type: optional \\
+default: -1 \\
+description: set the level of information you want to print out (0: event;
+1: daughter; 2: deposit; 3: photoelectrons; 4: photons) \\
+candidates: 0, 1, 2, 3, 4 \\
+
+
+\item \textbf{/ds/manager/daughterdepth xxx}\\
+type: optional \\
+default: 1 \\
+description: set max parent id correspondent to the daughter to store\\
+
+\item \textbf{/ds/manager/TMB\_fraction  xxx}\\
+type: optional \\
+default: 0.5\\
+description: set the TMB/PC ratio for the neutron veto scintillator
+
+\item \textbf{/ds/manager/fast\_simulation  xxx}\\
+type: optional \\
+default: 0\\
+description: scale the TPC PMTs QE to 1.0 and generate less photons
+
+\item \textbf{/ds/manager/storecherenkov  xxx}\\
+type: optional \\
+default: 0\\
+description: store the number of emitted Cherenkov photons (without tracking them) in the PhotonStructure
+
+\item \textbf{/run/beamOn xxx}\\
+type: mandatory\\
+default: Varies \\
+description: set the number of events to be generated\\
+candidates: Any integer [0, 100000000]\\
+
+\end{itemize}
+
+
+\section{Detector}
+\begin{itemize}
+\item \textbf{/ds/detector/configuration xxx}\\
+type: optional \\
+default: 0 \\
+description:  
+\begin{itemize}
+\item 0: DS50 TPC+NW+WT
+\item 1: DS50 TPC+NW
+\item 2: DS50 NV+WT
+\item 4: LAr test setup
+\item 5: DS10 TPC
+\item 6: Scintillator small setup
+\item 7: DSG2 (first version) TPC + NV + WT
+\item 8: DSG3 (ARGO-like) TPC + NV
+\item 9: DS5k (second version) TPC
+\item 10: DS20k (final version) TPC + WT (the WT can be filled with water, Gd-water, B-scintillator) or TPC + NV + WT
+\item 100: Licorne
+\end{itemize}
+
+
+\item \textbf{/ds/detector/wt\_material xxx}\\
+type: optional \\
+default: Water \\
+description: define the water tank material 
+candidates: BoronScintillator Water GdWater\\
+
+\item \textbf{/ds/detector/wt\_radius xxx}\\
+type: optional \\
+default: 5 m  \\
+description: define the water tank radius \\
+units: m, cm \\
+
+\item \textbf{/ds/detector/wt\_height xxx}\\
+type: optional \\
+default: 9 m  \\
+description: define the water tank height \\
+units: m cm \\
+
+
+
+
+\item \textbf{/ds/detector/ExtLarScintillating xxx}\\
+type: optional \\
+default: 0 \\
+description: If 1, add  scintillation to argon between cryostat and TPC in DS50. If you set it to 0, the simulation for external gammas is speeded up. 
+candidates: 0, 1 \\
+
+
+\item \textbf{/ds/detector/scintillator xxx}\\
+type: optional \\
+default: BoronScintillator \\
+description: Choose the scintillator in the neutron veto\\
+candidates: BoronScintillator GdScintillator\\
+
+\item \textbf{/ds/detector/vetoyieldfactor xxx}\\
+type: optional \\
+default: 1.0 \\
+description: Set the scaling factor for the veto scintillation yield (0 = no light emitted but visible energy stored) \\
+candidates: \\
+
+\item \textbf{/ds/detector/holderRadius xxx}\\
+type: optional \\
+default: 70.0 cm \\
+description: Set the distance of bottom of the source holder from the center of the TPC (units: mm, cm, m). The source holder constructor is automatically activated.\\
+candidates: \\
+
+\item \textbf{/ds/detector/holderPhi xxx}\\
+type: optional \\
+default: 0.0 \\
+description: Set the angle with respect to the x axis in the LSV frame (units: rad, deg, degree).  The source holder constructor is automatically activated.\\
+candidates: \\
+
+\item \textbf{/ds/detector/holderZ xxx}\\
+type: optional \\
+default: 0.0 \\
+description: Set the vertical position of the source holder in the LSV frame (units: mm, cm, m).  The source holder constructor is automatically activated. \\
+candidates: \\
+\end{itemize}
+ 
+\subsection{specific for ds20k design study}
+
+
+\begin{itemize}
+\item \textbf{/ds/detector/ds20cryo\_tpcHeight xxx}\\
+type: optional \\
+default:  240 cm\\
+description: set the height of the octagonal TPC \\
+units: mm cm m \\
+\item \textbf{/ds/detector/ds20cryo\_tpcEdge xxx}\\
+type: optional \\
+default: 120 cm \\
+description: set the edge of the octagonal TPC \\
+units : mm cm m \\
+
+\item \textbf{/ds/detector/ds20\_AcrylicWalls\_Thick xxx}\\
+type: optional \\
+default: 5 cm \\
+description: set the thickness of the TPC walls and anode and cathode\\
+units : mm cm \\
+
+\item \textbf{/ds/detector/ds20\_LArBuffers\_Thick xxx}\\
+type: optional \\
+default: 40 cm \\
+description: set the thickness of the LAr veto buffers\\
+units : cm m\\
+
+\item \textbf{/ds/detector/ds20\_VetoShell\_Thick xxx}\\
+type: optional \\
+default: 40 cm \\
+description: set the thickness of the passive Gd-loaded (2\%) plastic \\ 
+units : cm m\\
+
+
+\end{itemize}
+
+Old design version 
+
+\begin{itemize}
+
+\item \textbf{/ds/detector/ds20lsv\_detector xxx}\\
+type: optional \\
+default: 1 \\
+description: choose to build the LSV detector inside the water tank \\
+candidates: \\
+
+\item \textbf{/ds/detector/ds20lsv\_pmt xxx}\\
+type: optional \\
+default: 1 \\
+description: choose the LSV PMT type (1 means 8 inches, 2 means 20 inches)  \\
+candidates: 1, 2\\
+
+\item \textbf{/ds/detector/ds20lsv\_diameter xxx}\\
+type: optional \\
+default: 736.6 cm \\
+description: define the LSV radius\\
+units: cm m \\
+
+\item \textbf{/ds/detector/ds20cryo\_thickness xxx}\\
+type: optional \\
+default:  1 cm\\
+description: set the thickness of the minimal cryostat \\
+units: mm cm \\
+
+\item \textbf{/ds/detector/ds20cryo\_material xxx}\\
+type: optional \\
+default: 0 \\
+description: set the material for the minimal cryostat \\
+candidates: 0, steel ; 1, titanium ; 2, copper \\
+
+\item \textbf{/ds/detector/ds20cryo\_distance xxx}\\
+type: optional \\
+default: 5 cm  \\
+description: set the distance between the cryostat and the TPC corner \\
+units: mm cm \\
+
+\end{itemize}
+
+
+\section{Physics}
+\begin{itemize}
+
+\item \textbf{/ds/physics/hadronic\_list xxx}\\
+type: optional\\
+default: Shielding\\
+description: define the hadronic physics list\\
+candidates: none HP Shielding QGSP\_BERT\_HP QSGP\_BIC\_HP FTF\_BIC\_HP FTFP\_BERT\_HP \\
+
+\item \textbf{/ds/physics/em\_list xxx}\\
+type: optional \\
+default: livermore\\
+description: define the electromagnetic physics list\\
+candidates: standard livermore\\
+
+\item \textbf{/ds/physics/optics xxx}\\
+type: optional \\
+default: 1\\
+description: 1 corresponds to the NEST scintillation model; 2 to the DSLight model, still based on the merging of Thomas-Imel and Doke-Birks; 3 to the model based on the effective recombination probability extracted from DS10 data \\\\
+
+\item \textbf{/ds/physics/LSoptics xxx}\\
+type: optional \\
+default: 2\\
+description: 1 corresponds to the quenching model using EMSaturation ; 2 to the quenching model using SRIM or analytical (Bethe-like) formula, validated in Borexino; \\\\
+
+\item \textbf{/ds/physics/tuned200V xxx}\\
+type: optional \\
+default: true\\
+description: use the calibrated recombination probability at 200 V/cm. If drift field is specified (/ds/physics/DriftField xxx), the tuned S1 option is switched automatically to false, and the
+old calibrations are used. \\
+
+\item \textbf{/ds/physics/cherenkov xxx}\\
+type: optional \\
+default: false\\
+description: activate the cherenkov process \\
+
+
+\item \textbf{/ds/physics/killS1S2 xxx}\\
+type: optional \\
+default: false\\
+description: kill S1 and S2 light pulses, after storing the equivalent energies\\
+
+\item \textbf{/ds/physics/killS2 xxx}\\
+type: optional \\
+default: false\\
+description: kill S2 light\\
+
+\item \textbf{/ds/physics/scaleS2 xxx}\\
+type: optional \\
+default: 1\\
+description: scale S2 light by factor xxx\\
+
+\item \textbf{/ds/physics/DriftField xxx}\\
+type: optional\\
+default: 0 V/cm\\
+description: set the drift field to xxx. \\
+units: V/cm  kV/cm
+
+\item \textbf{/ds/physics/ExtractionField xxx}\\
+type: optional\\
+default: 0 kV/cm\\
+description: set the extraction field to xxx. \\
+units: V/cm  kV/cm
+
+\item \textbf{/ds/physics/HPRangeCuts xxx}\\
+type: optional \\
+default: true\\
+description: by default, the range cuts are set to 1 mm in all the volumes but the active LAr, where they are set to 1 $\mu$m instead. 
+If xxx = false, the 1 mm range cuts are extended also to the active LAr.
+
+\item \textbf{/ds/physics/DepositCuts xxx}\\
+type: optional \\
+default: false\\
+description: to use with DSGeneratorEnergyDeposit; it sets the physics cut to 10 cm
+
+
+
+\end{itemize}
+
+\section{Generators}
+\begin{itemize}
+\item G4Gun: is the most general and flexible generator; it provies the ability to shoot  single particles (e-, gamma, alpha, etc.) in pointlike
+positions or with spatial distributions; moreover, you can generate energy distributions;
+\item Multi: is similar to G4Gun, with the possibility to create a "multi" event (more particles in the
+same vertex), specifying the pdg code, energy and probability for each particle;
+\item RDM: radioactive decay module generates single isotope decay, exploiting the ENSDF tables;
+\item CosmicRayMuons:  generate cosmic muons from measured distributions;
+\item NeutronsAtGS: generate neutrons from the rock from measured distributions; 
+\item SCS: it allows generating special cross sections. So far, just the $^{39}$Ar cross section from literature is implemented.
+\item AmBeSource: generates neutrons and gammas from AmBe decay. 
+\item Licorne: neutron beam. 
+\item HEPevt: read events in the HEPEVT format generated with an external program (p.e. \textit{Marley}).
+\end{itemize}
+
+\begin{itemize}
+
+\item \textbf{/ds/generator/select xxx}\\
+type: optional mandatory\\
+default: \\
+description: \\
+candidates: G4Gun, CosmicRayMuons, NeutronsAtGS, MultiEvent, RDM, SCS, AmBeSource, HEPevt.
+\end{itemize}
+
+\subsection{General commands}
+\begin{itemize}
+
+\item \textbf{/ds/generator/particle xxx} \\ 
+type: mandatory with G4Gun\\
+default: no default\\
+description: define the particle type. Select Ar40 to generate Nuclear Recoils.\\
+candidates: e-, e+, mu-, mu+, gamma, Ar40, etc.\\
+
+\item \textbf{/ds/generator/position xxx}\\
+type: optional \\
+default: no default\\
+description: define the particle three vector position (with unit)\\
+units: mm, cm, m\\
+
+\item \textbf{/ds/generator/direction xxx}\\
+type: optional \\
+default: no default\\
+description: define the particle direction; 
+to be used only with G4Gun position\\
+
+\item \textbf{/ds/generator/energy xxx}\\
+type: mandatory with G4Gun \\
+default: no default\\
+description: define the particle energy (with unit)\\
+units: eV, keV, MeV, GeV\\
+
+\item \textbf{/ds/generator/numberofparticles xxx}\\
+type: optional \\
+default:1\\
+description: define the number of particles to be generated in the same position with random direction. Currently working only with G4Gun.\\
+
+\item \textbf{/ds/generator/sphere\_radius xxx}\\
+type: optional \\
+default: no default\\
+description: activate and set the radius of a spherical isotropic distribution
+centered on (0,0,0)\\
+units:  mm cm m\\
+
+\item \textbf{/ds/generator/sphere\_radius\_min xxx}\\
+type: optional \\
+default: no default\\
+description: set the minimum  radius of the spherical distribution defined 
+by /ds/generator/g4gun/sphere\_radius\\
+units:  mm cm m\\
+
+\item \textbf{/ds/generator/surface\_radius xxx}\\
+type: optional \\
+default: no default\\
+description: activate and set the radius of  spherical surface isotropic
+distribution \\
+units:  mm cm m\\
+
+\item \textbf{/ds/generator/set\_center xxx}\\
+type: optional \\
+default: (0,0,0)\\
+description: shift the center of the spherical distributions\\
+units: nm um mm cm m\\
+
+\item \textbf{/ds/generator/postype xxx}\\
+type: optional \\
+description: set the position distribution type\\
+candidates: Point Plane Surface Volume\\
+
+\item \textbf{/ds/generator/posshape xxx}\\
+type: optional \\
+description: set the position  distribution shape\\
+candidates: Square Circle Ellipse Rectangle Sphere Ellipsoid Cylinder Parallelepiped\\
+
+\item \textbf{/ds/generator/sethalfX xxx}\\
+type: optional \\
+description: set half X\\
+units: mm cm m\\
+
+\item \textbf{/ds/generator/sethalfY xxx}\\
+type: optional \\
+description: set half Y\\
+units: mm cm m\\
+
+\item \textbf{/ds/generator/sethalfZ xxx}\\
+type: optional \\
+description: set half Z\\
+units: mm cm m\\
+
+\item \textbf{/ds/generator/setradius xxx}\\
+type: optional \\
+description: set max radius\\
+units: mm cm m\\
+
+\item \textbf{/ds/generator/setradius0 xxx}\\
+type: optional \\
+description: set min radius\\
+units: mm cm m\\
+
+\item \textbf{/ds/generator/tpcdistribution xxx}\\
+type: optional \\
+description: automatically define a uniform spatial distribution in the TPC\\
+units: boolean\\
+
+\item \textbf{/ds/generator/gaspocketdistribution xxx}\\
+type: optional \\
+description: automatically define a uniform spatial distribution in the Gas Pocket\\
+units: boolean\\
+
+\item \textbf{/ds/generator/tpccenter xxx}\\
+type: optional \\
+description: set the particle position or the the center of a spatial distribution in the center of theTPC\\
+units: boolean\\
+
+\item \textbf{/ds/generator/dist\_energy xxx}\\
+type: optional \\
+default: is off\\
+description: set the energy distribution; candidates are: Lin (linear), Pow (power-law), Exp 
+(exponential), Gauss (gaussian), Brem (bremsstrahlung), BBody (black-body), Cdg
+(cosmic diffuse gamma-ray)\\
+candidates = Lin Pow Exp Gauss Brem BBody Cdg\\  
+
+\item \textbf{/ds/generator/emin xxx}\\
+type: optional \\
+default: 0 MeV\\
+description: set the minimum energy in the distribution\\
+candidate units: eV keV MeV GeV\\
+
+\item \textbf{/ds/generator/emax xxx}\\
+type: optional \\
+default: 0 MeV\\
+description: set the maximum energy in the distribution\\
+candidate units: eV keV MeV GeV\\
+
+\item \textbf{/ds/generator/alpha xxx}\\
+type: optional \\
+default: no default\\
+description:  set alpha for a power-law distribution\\
+
+\item \textbf{/ds/generator/temp xxx}\\
+type: optional \\
+default: no default\\
+description:  set temperature for a Brem or BBody distributions (in kelvin)\\
+
+\item \textbf{/ds/generator/ezero xxx}\\
+type: optional \\
+default: 0 MeV\\
+description: set Ezero for an exponential distribution\\
+candidate units: eV keV MeV GeV\\
+
+\item \textbf{/ds/generator/gradient xxx}\\
+type: optional \\
+description: set gradient for a linear distribution\\
+  
+\item \textbf{/ds/generator/intercept xxx}\\
+type: optional \\
+description: set intercept for a linear distribution\\
+
+
+\item \textbf{/ds/generator/confine xxx}\\
+type: optional \\
+default: no default\\
+description: generates only inside a defined volume. The final distribution is an intersection between the spatial
+generator and the volume defined.\\
+options: not yet implemented\\
+
+\item \textbf{/ds/generator/energyfile xxx}\\
+type: optional \\
+default: no default\\
+description: reads a user defined file (xxx), formatted with 2 columns: 
+the kinetic energy in keV and the number of events. 
+It generates particles with random kinetic energy taken from the so-defined distribution.\\
+
+Files for neutron background from TALYS are already present in the data folder. To run neutron background simulations for individual material  and decay chain use the following commands:
+\begin{itemize}
+\item /ds/generator/energyfile  ../data/physics/U238BoroSilicate.dat
+\item /ds/generator/energyfile  ../data/physics/Th232Teflon.dat
+\item /ds/generator/energyfile  ../data/physics/Th232StainlessSteel.dat
+\item /ds/generator/energyfile  ../data/physics/Th232FusedSilica.dat
+\item /ds/generator/energyfile  ../data/physics/Th232BoroSilicate.dat
+\item /ds/generator/energyfile  ../data/physics/U238U235Th232StainlessSteel.dat
+\item /ds/generator/energyfile  ../data/physics/U238Teflon.dat
+\item /ds/generator/energyfile  ../data/physics/U238StainlessSteel.dat
+\item /ds/generator/energyfile  ../data/physics/U238FusedSilica.dat
+\end{itemize}
+
+
+
+\item \textbf{/ds/generator/holderSource\_on xxx}\\
+type: optional \\
+description: events are simulated randomly inside the source placed in the source holder. The source holder constructor is not automatically activated: to construct it use one of the three holder position commands.
+
+
+\item \textbf{/ds/generator/bgd\_cryostats xxx}\\
+type: optional \\
+description: events are simulated with random direction and random position inside the stainless steel of the two cryostats
+
+\item \textbf{/ds/generator/is\_G2\_cryostat xxx}\\
+type: optional\\
+description: to be used in association with the previous command.
+If xxx = true, the background is simulated in the G2 cryostats rather than in the DS50 ones.
+Beware, this command does not automatically set the G2 detector configuration (configuration 7: G2 + NV + WT): the user has to set it.
+
+\item \textbf{/ds/generator/bgd\_teflon xxx}\\
+type: optional \\
+description: events are simulated with random direction and random position inside the teflon present in the TPC
+
+\item \textbf{/ds/generator/bgd\_fused\_silica xxx}\\
+type: optional \\
+description: events are simulated with random direction and random position inside the fused silica of TPC cathode window and of diving bell
+
+\item \textbf{/ds/generator/bgd\_pmt\_photocathode xxx}\\
+type: optional \\
+description: events are simulated with random direction and random position inside the glass window of the pmts in the TPC
+
+\item \textbf{/ds/generator/liquidargon xxx}\\
+type: optional \\
+description: events are simulated randomly inside the liquid argon volume
+
+
+\item \textbf{/ds/generator/bgd\_cryostats xxx}\\
+type: optional \\
+description: events are simulated randomly inside the cryostats
+
+\item \textbf{/ds/generator/bgd\_sipm xxx}\\
+type: optional \\
+description: events are simulated randomly inside the SiPMs
+
+\item \textbf{/ds/generator/bgd\_pmt\_stem xxx}\\
+type: optional \\
+description: events are simulated randomly inside the PMT stems
+
+\item \textbf{/ds/generator/bgd\_rings xxx}\\
+type: optional \\
+description: events are simulated randomly inside the rings
+
+
+\item \textbf{/ds/generator/bgd\_grid xxx}\\
+type: optional \\
+description: events are simulated randomly inside the grid
+
+\item \textbf{/ds/generator/liquidscintillator xxx}\\
+type: optional \\
+description: events are simulated randomly inside the liquid scintillator veto volume
+
+
+
+
+
+
+\end{itemize}
+
+\subsection{G4Gun}
+
+\begin{itemize}
+
+\item \textbf{/ds/generator/g4gun/ion xxx}\\ 
+type: optional \\
+default: no default\\
+Set properties of ion to be generated. [usage] /ds/generator/g4gun/ion Z A Q E
+\begin{itemize}
+\item	 Z:(int) AtomicNumber 
+\item	 A:(int) AtomicMass 
+\item	 Q:(int) Charge of Ion (in unit of e) 
+\item	 E:(double) Excitation energy (in keV) 
+\end{itemize}
+
+\item \textbf{/ds/generator/g4gun/ionL xxx}\\ 
+type: optional \\
+default: no default\\
+Set properties of ion to be generated. [usage] /ds/generator/g4gun/ionL Z A Q I
+\begin{itemize}
+\item	 Z:(int) AtomicNumber 
+\item	 A:(int) AtomicMass 
+\item	 Q:(int) Charge of Ion (in unit of e) 
+\item	 I:(int) Level number of metastable state (0 = ground)
+\end{itemize}
+
+\end{itemize}
+
+
+\subsection{RDM}
+The Radioactive Decay Module is the geant4 internal radiaoctive decay generator. It exploits the ENSDF tables. 
+It can generate only a single isotope per time. \\
+It is mandatory to use with this generator the correspondent stacking actions  \textbf{/ds/stack/select RDM} or,  \textbf{/ds/stack/select RDMChain}, if you want to generate a decay chain segment starting from the source isotope. \\
+
+\begin{itemize}
+
+\item \textbf{ds/generator/rdm/ion xxx}\\ 
+type: mandatory \\
+default: no default\\
+description: set the ion A, Z and energy in keV (e. g. for C14 at rest: /ds/generator/rdm/ion 14 6 0 ) \\
+
+\end{itemize}
+
+
+
+
+\subsection{CosmicRayMuons}
+\begin{itemize}
+
+\item \textbf{/ds/generator/cosmicray/height xxx}\\
+type: optional \\
+default: 8.1 m \\
+description: Set the z position of the muon shower\\
+
+\item \textbf{/ds/generator/cosmicray/radius xxx}\\
+type: optional\\
+default: 8 m\\
+description: Set the radius of the muon shower \\
+
+\item \textbf{/ds/generator/cosmicray/depth xxx}\\
+type: optional \\
+default: 3700 m\\
+description: Set the depth of the Laboratory\\
+candidates: Depths between 1 and 10 km\\
+
+\item \textbf{/ds/generator/cosmicray/index xxx}\\
+type: optional \\
+default: 3.7\\
+description: Set the spectral index of muons\\
+candidates: 2.0 = Exotic sources, 2.7 = Prompt sources (e.g. charm decay), 3.7 = Standard spectrum \\
+
+\item \textbf{/ds/generator/cosmicray/energyLow xxx}\\
+type: optional \\
+default: 1GeV \\
+description: Set the lower edge of the energy spectrum\\
+candidates: Energies between 100 MeV and 10 GeV\\
+
+\item \textbf{/ds/generator/cosmicray/energyUp xxx}\\
+type: optional \\
+default: 10 TeV\\
+description: Set the upper edge of the energy spectrum\\
+candidates: Energies between 100 GeV and 50 TeV\\
+
+\item \textbf{/ds/generator/cosmicray/filename xxx}\\
+type: optional \\
+default: zenith$\_$azimuth.dat \\
+description: Name of the file containing the angular spectrum\\
+candidates: File in the format cos$\theta$, $\phi$, pdf, evenly spaced in cos$\theta$, located in the DSDATA directory\\
+\end{itemize}
+
+
+\subsection{NeutronsAtGS}
+\begin{itemize}
+
+\item \textbf{/ds/generator/neutrons/height xxx}\\
+type: optional \\
+default: 15.1 m \\
+description: Set the z position of the neutron shower\\
+
+\item \textbf{/ds/generator/neutrons/radius xxx}\\
+type: optional\\
+default: 15 m\\
+description: Set the radius of the neutron shower \\
+
+\item \textbf{/ds/generator/neutrons/direction xxx}\\
+type: optional \\
+default: roof \\
+description: Set the position of the neutron shower\\
+candidates: roof, walls, floor\\
+
+\item \textbf{/ds/generator/neutrons/fission xxx}\\
+type: optional \\
+default: false\\
+description: Set the fission and ($\alpha$, n) neutron generation (TRUE) or the cosmogenic neutron generation (FALSE)\\
+candidates: TRUE, FALSE \\
+
+\end{itemize}
+
+\subsection{MultiEvent}
+
+Similar to G4Gun, allows to simulate several complex vertexes, each one with several particles. There is no limit to the
+number of vertexes you intend to simulate, and to the number of particles in the same vertex. 
+You have to specify the absolute weight of each vertex and the branching ratio of each particle 
+within the same vertex. The direction of the particle is generated randomly. 
+
+\begin{itemize}
+
+\item \textbf{/ds/generator/multi/event x1 x2 x3 x4 x5}\\ 
+type: mandatory \\
+default: no default\\
+description: specify the particle counter ID of the vertex (x1) starting from 1, weight of the vertex (x2), pdg code (x3), 
+energy in MeV (x4) and branching ratio (x5); repeat this command for
+each particle you want to generate in the same vertex. For example, in Co57, for 89\% of the cases
+there is a cascade of 2 gammas with 122 and 14 keV and for 11\% of the cases there is a single gamma of 136 keV. Then 
+you can write: \\
+/ds/generator/multi/event      1  0.89   22   0.122    1.\\
+/ds/generator/multi/event      1  0.89   22   0.014    1.\\
+/ds/generator/multi/event      2  0.11   22   0.136    1.\\
+
+For Ce139, a gamma of 166 keV is associated in 11\% of the cases to a X-ray of 34 keV. Then:\\ 
+/ds/generator/multi/event      1  1   22   0.166    1.\\
+/ds/generator/multi/event      1  1   22   0.034    0.11\\
+
+\end{itemize}
+
+
+\subsection{SCS}
+This generator allows the simulation of special cross sections, in addition to the ones already available in Geant4 and achievable through the RDM.
+For the moment, only the $^{39}$Ar spectrum from literature is implemented.
+
+\begin{itemize}
+
+\item \textbf{/ds/generator/scs/isotope xxx}\\
+type: mandatory for this generator \\
+default: no default \\
+description: select the special cross section.\\
+candidates: Ar39
+
+\item \textbf{/ds/generator/scs/emin xxx}\\
+type: optional \\
+default: 0 MeV\\
+description: set the minimum energy in the distribution\\
+candidate units: eV keV MeV GeV\\
+
+\item \textbf{/ds/generator/scs/emax xxx}\\
+type: optional \\
+default: 0 MeV\\
+description: set the maximum energy in the distribution\\
+candidate units: eV keV MeV GeV\\
+
+\end{itemize}
+
+\subsection{AmBeSource}
+This generator produces neutrons and gammas from AmBe decay.  It allows the user to simulate the full decay spectrum, or to generate a specific decay chain (either a lone neutron, a neutron with 1 gamma or a neutron with 2 gammas).
+See the macro ambe.mac for the list of commands.
+
+\begin{itemize}
+
+\item \textbf{/ds/generator/AmBe/source xxx}\\
+type: mandatory for this generator \\
+default: no default \\
+description: select the decay scheme \\
+candidates: all, neutron0G, neutron1G, neutron2G
+
+\item \textbf{/ds/generator/AmBe/disable xxx}\\
+type: optional \\
+default: no default \\
+description: allows to disable n or gammas. This is useful if you only want to study energy depositions of neutrons without contamination by the gammas (which are simulated in the same event). This option was used in collimator studies with AmBe, in which the collimation of neutrons was studied (Aug. 2014).\\
+candidates: n, gamma
+
+\end{itemize}
+
+
+\subsection{HEPevt}
+
+This generator reads events from a text file in the HEPEVT format, produced with an external
+program (p.e. \textit{Marley}).
+
+\begin{itemize}
+
+\item \textbf{/ds/generator/hepevt/filename xxx}\\
+type: optional \\
+default: events.hepevt \\
+description: select the text file with the events information. The HEPEVT format is as follows:
+{\tiny
+\begin{verbatim}
+For each event:
+  int    nevhep - event number
+  int    nhep   - number of entries in this event record
+
+For each particle (j) in the event:
+  int    isthep(j)   - status code
+                         0 - null
+                         1 - final state particle
+                         2 - intermediate state
+                         3 - documentation line
+  int    idhep(j)    - particle ID, P.D.G. standard
+  int    jmohep(0,j) - position of mother particle in list
+  int    jmohep(1,j) - position of second mother particle in list
+  int    jdahep(0,j) - position of first daughter in list
+  int    jdahep(1,j) - position of last daughter in list
+  double phep(0,j)   - x momentum in GeV/c
+  double phep(1,j)   - y momentum in GeV/c
+  double phep(2,j)   - z momentum in GeV/c
+  double phep(3,j)   - energy in GeV
+  double phep(4,j)   - mass in GeV/c**2
+  double vhep(0,j)   - x vertex position in mm
+  double vhep(1,j)   - y vertex position in mm
+  double vhep(2,j)   - z vertex position in mm
+  double vhep(3,j)   - production time in mm/c
+\end{verbatim}
+} % \tiny
+
+\end{itemize}
+
+\section{Stacking Manager}
+The Stacking Action introduces a pre-selection of generated photons before their tracking. It is extremely useful if
+you need to speed up the simulation. Obviously, invoking the stack requires a large use of RAM memory. 
+Each StackingAction has been thought for a proper kind of simulation.\\
+\begin{itemize}
+
+\item \textbf{ /ds/stack/select  xxx}\\
+type: optional \\
+default: no stacking action   \\
+candidates: RDM RDMChain\\
+\end{itemize}
+
+
+
+\subsection{RDM}
+
+\begin{itemize}
+\item \textbf{ /ds/stack/rdm/kill  xxx}\\
+type: optional \\
+description: kill particles by selecting the PDG code. It can be useful if you want to study, e. g. only
+gammas in a beta + gammas decay. This command must be repeated for each particle type you want to kill.\\
+
+\item \textbf{ /ds/stack/rdm/killLE  xxx yyy}\\
+type: optional \\
+description: kill low energy particles by selecting the PDG code (xxx) and the energy threshold  (yyy) in keV. 
+This command must be repeated for each particle type you want to kill.\\
+
+\end{itemize}
+
+
+\subsection{RDMChain}
+
+\begin{itemize}
+\item \textbf{ /ds/stack/rdmchain/maxlifetime  xxx}\\
+type: optional \\
+default: 1.e30 ms \\
+description: Generate the radioactive chain segment until the isotope with  $\tau$ $>$ xxx. \\
+units: ps ns mus ms s \\
+
+
+\end{itemize}
+
+\section{Licorne}
+
+\subsection{Licorne Setup}
+\begin{itemize}
+\item \textbf{ /ds/detector/licorne/distance  xxx}\\
+type: optional \\
+default: \\
+description:  \\
+units: m cm \\
+
+\item \textbf{/ds/detector/licorn/theta   xxx}\\
+type: optional \\
+default: \\
+description:  \\
+units: degree rad \\
+
+\item \textbf{/ds/detector/licorn/theta   xxx}\\
+type: optional \\
+default: \\
+description:  \\
+units: degree rad \\
+
+\item \textbf{/ds/detector/licorne/phi1   xxx}\\
+type: optional \\
+default: \\
+description:  \\
+units: degree rad \\
+
+\item \textbf{ /ds/detector/licorne/phi2  xxx}\\
+type: optional \\
+default: \\
+description:  \\
+units: degree rad \\
+
+\item \textbf{/ds/detector/licorne/nuclear\_energy   xxx}\\
+type: optional \\
+default: \\
+description:  \\
+units: keV MeV \\
+
+\item \textbf{/ds/detector/licorne/neutron\_energy   xxx}\\
+type: optional \\
+default: \\
+description:  \\
+units: keV MeV \\
+
+\end{itemize}
+
+
+\subsection{Licorne Generator}
+\begin{itemize}
+\item \textbf{/ds/generator/licorne/position   xxx}\\
+type: optional \\
+default: \\
+description:  \\
+units: m cm \\
+
+\item \textbf{/ds/generator/licorne/pulse\_mode   xxx}\\
+type: optional \\
+default: activate the pulse mode run, otherwise it shoots a single neutron each time\\
+description:  \\
+
+\item \textbf{/ds/generator/licorne/run\_time   xxx}\\
+type: optional \\
+default: 100 microsecond\\
+description:  mandatory in pulse mode or activating the gamma background\\
+units: ns s microsecond \\
+
+\item \textbf{/ds/generator/licorne/neutron\_rate   xxx}\\
+type: optional \\
+default: neutron rate in pulse mode\\
+description:  \\
+units: hertz kilohertz \\
+
+\item \textbf{/ds/generator/licorne/gamma\_neutron\_ratio   xxx}\\
+type: optional \\
+default: 0 \\
+description:  fraction of 478 keV gamma's per emitted neutron\\
+
+\item \textbf{/ds/generator/licorne/pulse\_period   xxx}\\
+type: optional \\
+default: 800 ns\\
+description: time interlapsing between two pulses  \\
+units: ns s microsecond \\
+
+\item \textbf{/ds/generator/licorne/pulse\_width   xxx}\\
+type: optional \\
+default: 1.5 ns\\
+description: pulse time width \\
+units: ns s microsecond \\
+\end{itemize}
+
+\section{g4rooter variables}
+
+When applicable, the variable units are keV, ns or cm.
+
+\subsection{Primary particle}
+\begin{itemize}
+\item {\bf{ev}}:   event id
+\item {\bf{pdg}}:    pdg
+\item {\bf{ene0}}:  initial kinetic energy
+\item {\bf{s1ene}}: s1 equivalent energy (number of photons divided by the working function)
+\item {\bf{s2ene}}: s1 equivalent energy (number of electrons divided by the working function)
+\item {\bf{veto\_visene}}: visible energy in the NV. 
+\item {\bf{mu\_visene}}: visible energy in the OV (not yet implemented)
+\item {\bf{tpcene}}: true energy deposited in LAr
+\item {\bf{vetoene}}: true energy deposited in scintillator. 
+\item {\bf{muene}}: true energy deposited in water (not yet implemented)
+
+%\item {\bf{visene}}:  
+%\item {\bf{ene}}:  deposited energy in the active volumes
+%\item {\bf{qene}}:  
+%\item {\bf{qnpe}}:  
+\item {\bf{x, y, z}}: primary vertex position
+\item {\bf{radius}}: primary vertex radius
+\item {\bf{px, py, pz}}: primary direction
+\item {\bf{bx,by,bz}}:  coordinates of the center of mass of the light (not yet implemented) 
+\item {\bf{npe}}:  number of detected photoelectrons in the TPC
+\item {\bf{vnpe}}: number of detected photoelectrons in the Neutron Veto
+\item {\bf{munpe}}: number of detected photoelectrons in the Muon Veto
+\item {\bf{nph}}: number of generated photons
+\item {\bf{ndaughters}}: number of secondary particles
+\item {\bf{ndeposits}}: number of deposits
+\item {\bf{nusers}}:   number of user variables
+\end{itemize}
+
+\subsection{Secondary (daughter) particles}
+\begin{itemize}
+\item {\bf{Did[ndaughters]}}:  id 
+\item {\bf{Dpdg[ndaughters]}}: pdg 
+\item {\bf{Dpid[ndaughters]}}: father pdg
+\item {\bf{Dprocess[ndaughters]}}: creation process number (to be compared with the list printed in the log file) 
+\item {\bf{Dtime[ndaughters]}}: time w.r.t. the starting time of the primary particle
+\item {\bf{Dene[ndaughters]}}:   deposited energy
+\item {\bf{Dx, Dy, Dz[ndaughters]}}:	 position
+\item {\bf{Dpx, Dpy, Dpz[ndaughters]}}:   direction
+\end{itemize}
+
+\subsection{Deposits}
+\begin{itemize}
+\item {\bf{dep\_pdg[ndeposits]}}:    pdg 
+\item {\bf{dep\_mat[ndeposits]}}:    material index number of the deposit (the list of the material indexes is written at each
+simulation in the log file)
+\item {\bf{dep\_time[ndeposits]}}:   time w.r.t. the starting time of the primary particle
+\item {\bf{dep\_ene[ndeposits]}}:    deposited energy
+\item {\bf{dep\_step[ndeposits]}}:   step length
+\item {\bf{dep\_x,dep\_y, dep\_z[ndeposits]}}:       position
+\item {\bf{dep\_r[ndeposits]}}:     radius
+\end{itemize}
+
+
+\subsection{User defined variables}
+\begin{itemize}
+\item {\bf{int1[nusers]}}:  
+\item {\bf{int2[nusers]}}:
+\item {\bf{float1[nusers]}}: 
+\item {\bf{float2[nusers]}}:	
+\item {\bf{double0[nusers]}}:  
+\end{itemize}
+
+\subsection{TPC photoelectrons}
+\begin{itemize}
+\item {\bf{pe\_time[npe]}}: time
+\item {\bf{pe\_pmt[npe]}}:    pmt
+\end{itemize}
+
+\subsection{Neutron veto photoelectrons}
+\begin{itemize}
+\item {\bf{veto\_pe\_time[vnpe]}}:   time 
+\item {\bf{veto\_pe\_pmt[vnpe]}}:  pmt
+\end{itemize}
+
+\subsection{Muon veto photoelectrons}
+\begin{itemize}
+\item {\bf{mu\_pe\_time[munpe]}}:   time
+\item {\bf{mu\_pe\_pmt[munpe]}}:    pmt
+\end{itemize}
+
+\subsection{Photons}
+\begin{itemize}
+\item {\bf{ph\_volume[nph]}}: volume id (to be implemented)
+\item {\bf{ph\_pid[nph]}}: father id
+\item {\bf{ph\_wl[nph]}}: wavelength 
+\item {\bf{ph\_x, ph\_y, ph\_z[nph]}}: position
+\item {\bf{ph\_time[nph]}}: time
+
+\end{itemize}
+
+
+\section{g4rooter\_full additional variables}
+
+\subsection{Clusters}
+
+The clusterization algorithm groups close deposits (within 2 mm in vertical direction and 2 $\mu$s in time, no x--y clusterization is applied.  
+\begin{itemize}
+\item {\bf{nclus}}:               number of clusters.
+\item {\bf{cl\_true\_ene[nclus]}}: true deposited energy in the cluster.
+\item {\bf{cl\_ene[nclus]}}:      energy of the cluster (accounting for NR quenching -flat  0.25 assumed).
+\item {\bf{cl\_nucl[nclus]}}:     cluster energy due to nuclear recoils (deposits by heavy particles). Assuming the recombination S1 quenching (200 V/cm). 
+\item {\bf{cl\_elec[nclus]}}:     cluster energy due to electronic recoils (deposits by gammas or electrons).  Assuming the recombination S1 quenching (200      V/cm).
+
+\item {\bf{cl\_npe[nclus]}}:      Poisson energy to photo--electrons conversion with constant LY of 7.1 pe/keV.  Assuming the recombination S1 quenching (200      V/cm). 
+\item {\bf{cl\_ndep[nclus]}}:     number of clustered deposits. 
+\item {\bf{cl\_x, cl\_y, cl\_z[nclus]}}: position (weighted by the deposit energy).
+\item {\bf{cl\_t[nclus]}}:      time of the first deposit in the cluster.
+\end{itemize}
+
+\subsection{Data comparison}
+\begin{itemize}
+\item {\bf{tdrift}}:  conversion from the z coordinate of the first cluster to a drift time. 
+
+\end{itemize}
+Only when the optics is activated: 
+\begin{itemize}
+\item {\bf{s1\_max\_frac}}: maximum fraction of npe on one PMT
+\item {\bf{f90like}}: f90 computed integrating npe over 90 ns and 7 $\mu$s. A Gaussian sigma of $0.4\sqrt{\mbox{npe}}$~ is simulated to account for SPE resolution. 
+\item {\bf{s1\_corr}}: npe corrected for tdrift (using the official analysis conversion function).  
+\end{itemize}
+
+
+\subsection{Veto Variables}
+
+The energy deposited in the veto is directly computed by GEANT4 (veto\_visene). If the storing of the deposits, the following variables are also calculated (but using possibly different quenching models): 
+
+\begin{itemize}
+\item {\bf{prompt\_npeVeto}}:   number of pe's in a [-10,200] ns window
+\item {\bf{prompt\_npeNoise}}:  to be implemented
+\item {\bf{prompt\_timeVeto}}: prompt singnal time 
+\item {\bf{prompt\_zVeto}}:    prompt singnal z
+\item {\bf{prompt\_rVeto}}:    prompt singnal r
+  
+%\item {\bf{del\_npeVeto}}:   number of pe's in a [200 ns, 140 $\mu$s] window, following another signal (delay $<$ 300 ns) 
+%\item {\bf{del\_timeVeto}}:  delayed singnal time 
+\item {\bf{late\_npeVeto}}:   number of pe's in a [200 ns, 140 $\mu$s] window
+\item {\bf{late\_timeVeto}}:  late singnal time 
+\end{itemize}
+
+
+\subsection{Specific for DS20k design studies}
+\begin{itemize}
+\item {\bf{nphc}}: number of Cerenkov photons produced in the water tank. 
+\end{itemize}
+
+
+
+
+\section{g4rooter\_nDS2k additional variables}
+
+
+Capture variables (require writedaughters). These variables are filled when a set of secondaries is produced by process 4131 (nCapture). 
+\begin{itemize}
+\item {\bf{pdgCap}}:  Z of the capturing nucleus 
+\item {\bf{cap\_time}}: capture time in ns 
+\item {\bf{cap\_x,y,z}}: capture coordinates
+\item {\bf{cap\_gamma\_ene}}:    total energy of the gamma cascade
+\item {\bf{cap\_gamma\_mult}}: number of gammas in the cascade
+\end{itemize}
+
+Energy depositions in all the detector materials. Specific veto variables are not yet implemented. 
+\begin{itemize}
+\item {\bf{prompt\_depMat}}:  arrays with dimension equal to the number of constructed materials. The array index is the material index (eg 3 is Air, 7 is Acrylic, 8 is TPC UAr, 72 is LAr buffer). Each element of the list is given by the sum of the deposited energy in the index material. The prompt coincidence window is [-200, 200] ns around the time of the first interaction in the TPC. 
+\item {\bf{prompt\_qdepMat}}: as the above, including basic model for quenching. 
+\item {\bf{late\_depMat}}:   as prompt, but integrated in the [200 ns, 2 ms] time window 
+\item {\bf{late\_qdepMat}}:  as the above, including basic model for quenching. 
+\end{itemize}
+
+
+
+\end{document}

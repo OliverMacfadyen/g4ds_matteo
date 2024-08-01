@@ -1,0 +1,7 @@
+# minimal macro used by writeGDML.sh
+/ds/detector/configuration ds20k
+
+/ds/physics/hadronic_list none
+
+/run/filename 0
+/run/initialize

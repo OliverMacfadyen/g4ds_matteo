@@ -1,0 +1,71 @@
+##########################################################
+#                                                        #
+#      Special Cross Sections Standard Macro             #
+#                                                        #
+##########################################################
+
+
+#PreInit:
+
+#  Define the level of verbosity of messages
+# options: debugging, development, trace, routine, warning, error
+# default: routine
+#/ds/manager/log development
+/ds/manager/log trace
+/ds/manager/verbosity -1
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 1000
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 0
+
+
+# Detector configurations:
+# ds50_full ds50_tpc_veto ds50_tpc ds20k ds20k_tpc dsproto dsproto0 red_tpc dart ardm tester
+
+/ds/detector/configuration ds50_tpc
+
+# Define output file name
+/run/filename outscs
+
+#/ds/physics/HPRangeCuts false
+
+/ds/physics/optics 3
+
+# Define  random seed
+/run/heprandomseed 12345678
+
+#Define the hadronic physics list (none HP Shielding QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list none
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+#/ds/physics/killS1 1
+/ds/physics/killS2 1
+#/ds/physics/scaleS2 3
+
+/ds/physics/tuned200V         1
+/ds/physics/DriftField        200  V/cm
+/ds/physics/ExtractionField   2.8 kV/cm
+
+
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+#PostInit:
+
+
+/ds/generator/select SCS
+
+/ds/generator/scs/isotope Ar39
+
+#/ds/generator/position  0 -10 0 cm
+#/ds/generator/direction 0.0 1.0 0.0
+/ds/generator/tpcdistribution 1
+
+
+# Define the number of events
+/run/beamOn 1000

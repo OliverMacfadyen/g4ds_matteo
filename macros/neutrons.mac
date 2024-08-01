@@ -1,0 +1,97 @@
+##########################################################
+#                                                        #
+#                   G4Gun Standard Macro                 #
+#                                                        #
+##########################################################
+
+
+#PreInit:
+
+#  Define the level of verbosity of messages
+# options: debugging, development, trace, routine, warning, error
+# default: routine
+#/ds/manager/log trace
+/ds/manager/log routine
+/ds/manager/verbosity 0
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 10000
+/ds/manager/writephotons 0
+/ds/manager/skip_events_without_daughters true 
+
+
+
+#Define if geometry has to be exported in GDML file geo.root
+/ds/manager/GDML 0
+
+# Detector configurations:
+# ds50_full ds50_tpc_veto ds50_tpc ds20k ds20k_tpc dsproto dsproto0 red_tpc dart ardm tester
+
+/ds/detector/configuration ds20k
+
+
+# Define output file name
+/run/filename outneutrons
+
+# Define  random seed
+/run/heprandomseed 12345679
+
+
+
+
+#Define the hadronic physics list (none QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list QGSP_BERT_HP
+#/ds/physics/hadronic_list none
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+/ds/physics/killS1S2 1
+/ds/detector/vetoyieldfactor 0.0
+
+
+/ds/bias/type Cylinder
+/ds/bias/radius 2.25 m
+/ds/bias/half_z 2.65 m
+/ds/bias/center 0 0 0 m
+#/ds/bias/side 1 m
+
+
+
+
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+
+#PostInit:
+
+/ds/generator/select G4Gun
+/ds/stack/select OnlyOneParticle
+/ds/stack/only_one_particle/name neutron
+
+/ds/generator/particle neutron
+
+/ds/generator/dune_cryo_foam  1
+
+/ds/generator/dist_energy Lin
+/ds/generator/emin  0.5 MeV
+/ds/generator/emax  8.5 MeV
+/ds/generator/intercept 1
+/ds/generator/gradient  0
+
+
+
+#/ds/generator/sphere_radius 3 m
+#/ds/generator/sphere_radius_min 2.95 m
+
+#/ds/generator/direction 0 0 1
+#/ds/generator/position 0 0 0 cm
+#/ds/generator/energy 5 MeV
+
+
+
+
+
+
+# Define the number of events
+/run/beamOn 100000000

@@ -1,0 +1,110 @@
+# Macro file for the initialization phase
+# Sets some default verbose
+# and initializes the graphic.
+#
+# Attention - please set the command
+# export G4VIS_USE=1
+# to work with visualization
+#
+#  Define the level of verbosity of messages
+# options: debugging, development, trace, routine, warning, error
+# default: routine
+/ds/manager/log development
+/ds/manager/verbosity 1
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 1
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 0
+
+# Detector configurations:
+# ds50_full ds50_tpc_veto ds50_tpc ds20k ds20k_tpc dsproto dsproto0 red_tpc dart ardm tester
+
+/ds/detector/configuration ds20k
+
+#(de)activate the scintillation in the LAr veto with (0 or) 1
+/ds/detector/vetoyieldfactor 1
+
+#activate the actual placement of the vPDUs
+/ds/detector/ds20k_SiPMs 1
+
+# Define output file name
+/run/filename visout
+
+# Define  random seed
+/run/heprandomseed 127667
+
+#Define the hadronic physics list (none QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list none
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+#/ds/physics/optics 3
+
+/ds/physics/tuned200V   1
+/ds/physics/killS1S2 1
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+#PostInit:
+/ds/generator/select G4Gun
+
+/ds/generator/particle geantino
+/ds/generator/energy 0.3 MeV
+
+#first along the Zaxis
+/ds/generator/position  0 0 0 cm
+/ds/generator/direction 0 0 1
+
+# Define the number of events
+/run/beamOn 1
+
+#then along the Xaxis
+/ds/generator/position  0.0 0.0 0 m
+/ds/generator/direction 1. 0. 0.0
+/run/beamOn 1
+
+
+
+
+#-----------------------------------
+#Visualization
+#-----------------------------------
+
+/vis/open OGL 600x600-0+0
+/vis/viewer/set/autoRefresh false
+#/vis/scene/add/trajectories smooth
+/vis/scene/endOfEventAction accumulate
+#/vis/viewer/set/style wireframe
+/vis/viewer/set/style surface
+
+#option one for frontal image
+/vis/viewer/addCutawayPlane 0 0 0 m 0 -1 0
+#/vis/viewer/addCutawayPlane 0 0 0 m 1 0 0
+#/vis/viewer/addCutawayPlane 0 0 0 m 0 1 0
+/vis/viewer/set/viewpointThetaPhi 30 30
+/vis/viewer/set/upThetaPhi 0 0 deg
+/vis/viewer/set/viewpointVector 0 1 0
+#/vis/viewer/panTo 0.9 -0.9
+
+#alternative option for 45 deg view and cutout
+#/vis/viewer/addCutawayPlane 0 0 0 m 0 -1 0
+#/vis/viewer/addCutawayPlane 0 0 0 m 1 0 0
+#/vis/viewer/set/viewpointThetaPhi 30 30
+#/vis/viewer/set/viewpointVector -1 1 1
+
+/vis/viewer/zoom 1
+
+#/vis/viewer/refresh
+/tracking/storeTrajectory 1
+/vis/scene/add/trajectories
+
+/vis/scene/add/axes 0 0 0 1 m
+
+#/vis/viewer/set/autoRefresh true
+#/vis/verbose errors
+/vis/verbose warnings
+/vis/drawVolume worlds

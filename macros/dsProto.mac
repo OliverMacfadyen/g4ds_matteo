@@ -1,0 +1,38 @@
+/ds/manager/log trace
+/ds/manager/verbosity 0
+/ds/manager/checkoverlap 1
+/ds/manager/eventcounter 1000
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 0
+
+/run/filename outProto
+/run/heprandomseed 12345678
+
+#Detector configuration: TPC+NV+WT (0) - TPC+NW (1) - TPC (2) - NV+WT (3)
+#Fixed dimensions of DSProto
+/ds/detector/configuration dsproto
+/ds/detector/wt_material Air
+/ds/detector/ds20lsv_detector 0
+/ds/detector/ds20cryo_thickness 1 cm
+/ds/detector/ds20cryo_tpcHeight 58 cm
+/ds/detector/ds20cryo_tpcEdge 28 cm
+
+/ds/physics/hadronic_list none
+/ds/physics/em_list livermore
+
+/ds/physics/optics 3
+/ds/physics/killS1S2 1
+/ds/physics/tuned200V 1
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+/ds/generator/select G4Gun
+/ds/generator/particle  e-
+/ds/generator/energy	40 keV
+/ds/generator/position  -1.0 -3.0 0 cm
+/ds/generator/direction 1. 3. 0.0
+
+/run/beamOn 100

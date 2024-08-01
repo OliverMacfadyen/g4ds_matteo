@@ -1,0 +1,7 @@
+cd $G4DS/tools
+
+g++ g4licorne.C -o g4licorne `root-config --cflags --glibs`
+echo 'g4licorne compiled....'
+g++ g4licorne_pulsed.C -o g4licorne_pulsed `root-config --cflags --glibs`
+echo 'g4licorne_pulsed compiled....'
+cd $PWD

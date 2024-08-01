@@ -1,0 +1,71 @@
+##########################################################
+#                                                        #
+#                   G4Gun Standard Macro                 #
+#                                                        #
+##########################################################
+
+
+#PreInit:
+
+#  Define the level of verbosity of messages
+# options: debugging, development, trace, routine, warning, error
+# default: routine
+/ds/manager/log trace
+/ds/manager/verbosity -1
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 100
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 1
+
+
+
+/ds/detector/configuration ds20k
+
+
+# Define output file name
+/run/filename outrdmchain
+
+# Define  random seed
+/run/heprandomseed 12345679
+
+#Define the hadronic physics list (none QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP Shielding)
+/ds/physics/hadronic_list none
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+/ds/physics/killS1S2 1
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+#PostInit:
+
+
+/ds/generator/select RDM
+
+# The next command is required by this macro
+/ds/stack/select RDMChain
+#/ds/stack/rdmchain/maxlifetime 100000000000 s
+/ds/stack/rdmchain/stop_at_isotope 1000862220
+/ds/generator/rdm/ion 238 92 0
+
+/ds/generator/position  0.0 0.0 0.0 m
+/ds/generator/direction 0.0 1.0 0.0
+/ds/generator/energy 0.1 eV
+
+
+
+
+#/ds/generator/sphere_radius 1.0 m
+# Other options for the spatial distributions
+#/ds/generator/g4gun/bulk true
+#/ds/generator/g4gun/vessel true
+#/ds/generator/g4gun/buffer true
+#/ds/generator/g4gun/sphere_radius 3 m
+
+
+# Define the number of events
+/run/beamOn 1000

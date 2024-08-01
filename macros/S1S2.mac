@@ -1,0 +1,63 @@
+##########################################################
+#                                                        #
+#                   G4Gun Standard Macro                 #
+#                                                        #
+##########################################################
+
+
+#PreInit:
+
+#  Define the level of verbosity of messages
+# options: debugging, development, trace, routine, warning, error
+#/ds/manager/log debugging
+/ds/manager/log development
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 10
+/ds/manager/writedeposits 1
+/ds/manager/writephotons 1
+/ds/manager/verbosity 10
+
+#Define if geometry has to be exported in GDML file geo.root
+/ds/manager/GDML 0
+
+#Detector configuration: TPC+NW+WT (0) - TPC+NW (1) - TPC (2)
+/ds/detector/configuration ds50_tpc
+
+# Define output file name
+/run/filename outdev
+
+# Define  random seed
+/run/heprandomseed 12345679
+
+
+#Define the hadronic physics list (none QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list QGSP_BERT_HP
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+
+/ds/physics/S1S2 1
+
+
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+#PostInit:
+
+
+/ds/generator/select G4Gun
+
+#/ds/generator/particle  geantino
+/ds/generator/particle  gamma
+/ds/generator/energy    10. keV
+/ds/generator/position  0. 0. 0. mm
+/ds/generator/direction 0.0 0.0 1.0
+#/ds/generator/sphere_radius 0.01 mm
+#/ds/generator/sphere_origin 0.0 1.0 0.0 m
+
+
+# Define the number of events
+/run/beamOn 1

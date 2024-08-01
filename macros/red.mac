@@ -1,0 +1,102 @@
+# File written by C. Giganti and modified by M. Kuss (Michael.Kuss@pi.infn.it)
+
+/ds/manager/log routine
+/ds/manager/verbosity -1
+/ds/manager/checkoverlap 1
+/ds/manager/eventcounter 10000
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 0
+
+#Define if geometry has to be exported in GDML file geo.root
+/ds/manager/GDML 1
+
+/ds/detector/configuration red_tpc
+
+# check src/DSDetectorReD.cc under "ReD cryostat configuration"
+# 15099 is with setting non-active material to vacuum
+/ds/detector/red/configuration 15099
+
+# Define output file name
+/run/filename outReD_testNeutrons
+
+# Define random seed
+/run/heprandomseed 127677
+
+# Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+# Define the hadronic physics list (none HP QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list HP
+
+/ds/physics/optics 3
+
+/ds/physics/tuned200V 1
+/ds/physics/DriftField 200 V/cm
+/ds/physics/ExtractionField 2.8 kV/cm
+/ds/detector/ExtLarScintillating 0
+/ds/detector/vetoyieldfactor 0.0
+/ds/physics/killS1S2 1
+
+#------------------------------------------
+# Neutron detector Survey definition
+#------------------------------------------
+# You can define only one neutron detector survey
+
+# Set the ND positioning mode
+/ds/detector/red/ND_positioning_mode std
+
+# Set the survey mode (xyz or spherical)
+/ds/detector/red/ND_survey_mode xyz
+
+# Set the survey file name
+/ds/detector/red/ND_survey_filename xyz_survey.txt
+
+
+#------------------------------------------
+/run/initialize
+#------------------------------------------
+
+#PostInit:
+
+#------------------------------------------
+# Generator
+#------------------------------------------
+/ds/generator/select G4Gun
+
+/ds/generator/particle neutron
+/ds/generator/energy 2.5 MeV
+/ds/generator/position  -2 0 0.728 m
+/ds/generator/direction 1 0 -0.364  # 20 deg w/r to floor, in downward direction
+
+#------------------------------------------
+# Visualitazion
+#------------------------------------------
+/vis/scene/create
+/vis/open OGL 600x600-0+0
+/vis/sceneHandler/attach
+/vis/scene/add/trajectories
+#/vis/viewer/set/upVector 0 1 1
+#/vis/scene/add/axes 1. 1. 1. 1.
+/vis/viewer/set/style wireframe
+/vis/viewer/set/viewpointThetaPhi 0 90
+#/vis/viewer/set/style surface
+/vis/viewer/zoom 2
+#/vis/viewer/addCutawayPlane 0 0 0 m 0 1 0
+#/vis/viewer/set/style wireframe
+#/vis/viewer/set/viewpointThetaPhi 90 90
+/vis/viewer/panTo 0.9 -0.9
+/tracking/storeTrajectory 1
+#/vis/scene/add/trajectories
+/vis/viewer/refresh
+
+# Define the number of events!
+# Attention: benchmark with fewer events first before running >1M!
+# On my desktop (pcglast56), a setup with Aris like cryostat (99), 100M events,
+# neutron angle 20 deg wr to floor and scattering angle 40 deg, 8LScis needs:
+# regular material: 15.5h CPU, 72 GB fil
+# active regions only: 4h CPU, 14 GB fil
+#           G..M..k...
+#/run/beamOn  100000000
+/run/beamOn 1
+#           G..M..k...

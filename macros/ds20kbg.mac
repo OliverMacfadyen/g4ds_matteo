@@ -1,0 +1,103 @@
+##########################################################
+#                                                        #
+#            DS20K Neutron Bg Simulation                 #
+#                                                        #
+##########################################################
+
+#PreInit:
+
+#  Define the level of verbosity of messages
+# options: debugging, development, trace, routine, warning, error
+# default: routine
+/ds/manager/log trace
+/ds/manager/verbosity 0
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 1000
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 0
+
+# Define output file name
+/run/filename outDS20k_bg
+
+# Define  random seed
+/run/heprandomseed 127667
+
+# Detector configurations:
+# ds50_full ds50_tpc_veto ds50_tpc ds20k ds20k_tpc dsproto dsproto0 red_tpc dart ardm tester
+
+/ds/detector/configuration ds20k
+
+#DS20k: the commands below allow to adjust the geometry. Default values are however (mostly) fixed to the TDR specs
+#/ds/detector/ds20cryo_tpcEdge 145.1 cm
+#/ds/detector/ds20cryo_tpcHeight 350.5 cm
+#/ds/detector/ds20_AcrylicWalls_Thick 15 cm
+#/ds/detector/ds20_TPB_Thick 0.1 mm
+#/ds/detector/ds20cryo_thickness 1 cm
+#/ds/detector/ds20cryo_LArLevel 8.5 cm
+
+#DS20k: shape of the Ti vessel
+#/ds/detector/ds20cryo_material 1
+#/ds/detector/ds20cryo_cryostatR 2335 mm
+#/ds/detector/ds20cryo_cryostatH 3572 mm
+#/ds/detector/ds20cryo_bottomCapH 916.85 mm
+#/ds/detector/ds20cryo_topCapH 916.85 mm
+#/ds/detector/ds20cryo_topOffset 0 cm
+#/ds/detector/ds20cryo_bottomOffset 0 cm
+
+#(de)activate the scintillation in the LAr veto with (0 or) 1
+/ds/detector/vetoyieldfactor 0.0
+
+#activate the actual placement of the vPDUs
+/ds/detector/ds20k_SiPMs 0
+
+#Define the hadronic physics list (none HP QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list none
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+/ds/physics/optics 3
+/ds/physics/tuned200V 1
+/ds/physics/killS1S2 1
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+#PostInit:
+
+/ds/generator/select G4Gun
+
+/ds/generator/particle  neutron
+#/ds/generator/energy  0.1 eV
+
+/ds/generator/bgd_reflector 1
+#/ds/generator/argonbufferinside 1
+#/ds/generator/argonbufferoutside 1
+#/ds/generator/plasticscintillator 1
+#/ds/generator/bgd_veto_sipm 1
+#/ds/generator/bgd_windows
+#/ds/generator/bgd_pmt_photocathode
+#/ds/generator/liquidargon
+#/ds/generator/bgd_cryostats 1
+#/ds/generator/bgd_sipm 1
+#/ds/generator/bgd_pmt_stem 1
+#/ds/generator/bgd_rings 1
+#/ds/generator/bgd_grid 1
+#/ds/generator/gaspocketdistribution
+#/ds/generator/tpcdistribution 1
+
+#/ds/generator/energyfile  ../data/physics/U238Teflon.dat
+#/ds/generator/energyfile ../data/physics/U238BoroSilicate.dat
+#/ds/generator/energyfile ../data/physics/Th232Teflon.dat
+#/ds/generator/energyfile ../data/physics/Th232StainlessSteel.dat
+#/ds/generator/energyfile ../data/physics/Th232FusedSilica.dat
+#/ds/generator/energyfile ../data/physics/Th232BoroSilicate.dat
+#/ds/generator/energyfile ../data/physics/U238U235Th232StainlessSteel.dat
+#/ds/generator/energyfile ../data/physics/U238Teflon.dat
+/ds/generator/energyfile ../data/physics/U238StainlessSteel.dat
+#/ds/generator/energyfile ../data/physics/U238FusedSilica.dat
+
+# Define the number of events
+/run/beamOn 50000

@@ -1,0 +1,85 @@
+# ----------------------------#
+# DS LSV Optics               #
+#-----------------------------#
+
+# LS scintillation yield (in units /MeV) is untuned.
+ScintillationYield	= 18500
+
+# LS Birks factors (in units cm/MeV) from Borexino PRD (2014)
+BirksBeta		= 0.0109
+BirksAlpha		= 0.0218
+BirksProton		= 0.0109
+
+# LS Resolution Scale set to 1 (Gaussian with sigma = sqrt)
+ResolutionScale		= 1.0
+
+# Scintillation times (in ns) and weight from Borexino
+# used if /ds/physics/LSoptics 2 in the mac file
+BetaScintTime1		= 3.7
+BetaScintTime2		= 24
+BetaScintTime3		= 60
+BetaScintTime4		= 600
+BetaScintWeight1	= 0.889
+BetaScintWeight2	= 0.055
+BetaScintWeight3	= 0.027
+BetaScintWeight4	= 0.029
+AlphaScintTime1		= 3.9
+AlphaScintTime2		= 26.
+AlphaScintTime3		= 110.
+AlphaScintTime4		= 630.
+AlphaScintWeight1	= 0.674 
+AlphaScintWeight2	= 0.146
+AlphaScintWeight3	= 0.103
+AlphaScintWeight4	= 0.077
+
+# LS Fast and Slow time constant (in ns) from Borexino
+# used if /ds/physics/LSoptics 1 in the mac file
+FastTime		= 2.0
+SlowTime		= 17.61
+# LS Yield Ratio: ratio between Fast and Slow scintillation from Borexino
+# used if /ds/physics/LSoptics 1 in the mac file
+YieldRatio		= 0.93
+
+# LS WLS (PPO) time constant (in ns) and efficiency from Borexino
+WLSTime			= 1.8
+WLSEfficiency		= 0.8
+
+# Lumirror
+LumirrorEff 		= 0.
+LumirrorSpecLobe 	= 0.
+LumirrorSpecSpike 	= 0.
+LumirrorBackscat 	= 0.
+LumirrorRindex 		= 1.
+
+# Electropolished Stainless Steel (TPC outer cryostat surface)
+EpssRefl 		= 0.58
+EpssEff 		= 0.
+EpssSpecLobe 		= 0.65
+EpssSpecSpike 		= 0.
+EpssBackscat 		= 0.
+EpssRindex 		= 1.
+
+# PhotoCathode
+#CathodeRefl 		= 0.2
+VCathodeRefl 		= 0.1
+VCathodeEff 		= 0.
+VCathodeSpecLobe 	= 1.
+VCathodeSpecSpike 	= 0.
+VCathodeBackscat 	= 0.
+VCathodeRindex 		= 1.
+
+# PMT Back
+PMTBackRefl 		= 0.78
+PMTBackEff 		= 0.
+PMTBackSpecLobe 	= 1.
+PMTBackSpecSpike 	= 0.0
+PMTBackBackscat 	= 0.
+PMTBackRindex 		= 1.
+
+# Untreated Stainless Steel (flange surface)
+UnssRefl 		= 0.48
+UnssEff 		= 0.
+UnssSpecLobe 		= 0.65
+UnssSpecSpike 		= 0.0
+UnssBackscat 		= 0.
+UnssRindex 		= 1.

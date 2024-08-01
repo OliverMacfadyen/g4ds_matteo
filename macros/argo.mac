@@ -1,0 +1,84 @@
+##########################################################
+#                                                        #
+#            DS20K Neutron Bg Simulation                 #
+#                                                        #
+##########################################################
+
+
+#PreInit:
+
+#  Define the level of verbosity of messages
+# options: debugging, development, trace, routine, warning, error
+# default: routine
+/ds/manager/log routine
+/ds/manager/verbosity 0
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 1000
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 1
+
+#this command sets the fractional amount of Xe in the TPC
+/ds/manager/scint_mass_fraction 0.02
+
+#  Detector configuration:
+#  DS50  TPC+NV+WT (0) - DS50 TPC+NW (1) - DS50 TPC (2) - DS50 NV+WT (3)
+#  LAr Tester (4) -  DS10 TPC (5) -  Scintillator tester (6)
+#  DSG2 TPC + NV + WT (7) - DSG3 TPC + NV (8) - DS5k TPC (9)
+#  DS20k TPC + WT (10)
+
+
+/ds/detector/configuration ds20k_tpc
+/ds/detector/ds20cryo_tpcEdge 400 cm
+/ds/detector/ds20cryo_tpcHeight 350 cm
+/ds/detector/ds20_AcrylicWalls_Thick 5 cm
+#/ds/detector/ds20_LArBuffers_Thick 40 cm
+#/ds/detector/ds20_VetoShell_Thick 10 cm
+#/ds/detector/ds20_TPB_Thick 0.1 mm
+#/ds/detector/ds20_TPB_Layers 0000
+#/ds/detector/ds20_buffer_coverageInside 2
+#/ds/detector/ds20_buffer_coverageOutside 1
+#/ds/detector/vetoyieldfactor 0.0
+
+# Define output file name
+/run/filename outArgo
+
+# Define  random seed
+/run/heprandomseed 127667
+
+#Define the hadronic physics list (none QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list none
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+/ds/physics/optics 3
+/ds/physics/killS1S2 1
+
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+#PostInit:
+
+
+#/ds/generator/select G4Gun
+/ds/generator/select RDM
+/ds/stack/select RDMChain
+/ds/generator/rdm/ion 238 92 0
+
+#/ds/generator/particle  e-
+#/ds/generator/energy  0.1 eV
+
+
+#/ds/generator/bgd_reflector 1
+/ds/generator/bgd_sipm 1
+#/ds/generator/tpcdistribution 1
+
+#/ds/generator/energyfile  ../data/physics/U238Teflon.dat
+#/ds/generator/energyfile ../data/physics/U238StainlessSteel.dat
+
+
+
+# Define the number of events
+/run/beamOn 500

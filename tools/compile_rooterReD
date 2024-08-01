@@ -1,0 +1,7 @@
+cd $G4DS/tools
+
+exe=g4rooterReD
+g++ ${exe}.C -o ${exe} `root-config --cflags --glibs`
+echo "${exe} compiled ..."
+
+cd $PWD

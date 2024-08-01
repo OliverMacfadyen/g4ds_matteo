@@ -1,0 +1,135 @@
+# File written by C. Giganti and modified by M. Kuss (Michael.Kuss@pi.infn.it)
+
+#/tracking/verbose 1
+
+/ds/manager/log routine
+/ds/manager/verbosity -1
+/ds/manager/checkoverlap 1
+/ds/manager/eventcounter 10000
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 0
+
+#Define if geometry has to be exported in GDML file geo.root
+/ds/manager/GDML 1
+
+/ds/detector/configuration red_tpc
+# check src/DSDetectorReD.cc under "ReD cryostat configuration"
+# 15099 is with setting non-active material to vacuum
+# cryostat: 0 Naples, 1, Criotec, 99 "Aris-like"
+/ds/detector/red/configuration 1
+
+# Define output file name
+/run/filename outReD_test_LNS_Neutrons
+
+# Define random seed
+/run/heprandomseed 127677
+
+# Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+# Define the hadronic physics list (none HP QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list HP
+
+/ds/physics/optics 3
+
+/ds/physics/tuned200V 1
+/ds/physics/DriftField 200 V/cm
+/ds/physics/ExtractionField 2.8 kV/cm
+/ds/detector/ExtLarScintillating 0
+/ds/detector/vetoyieldfactor 0.0
+/ds/physics/killS1S2 1
+
+#------------------------------------------
+# Neutron detector Survey definition
+#------------------------------------------
+# You can define only one neutron detector survey
+
+# Set the ND positioning mode
+/ds/detector/red/ND_positioning_mode std
+
+# Set the survey mode (xyz or spherical)
+/ds/detector/red/ND_survey_mode xyz
+
+# Set the survey file name
+/ds/detector/red/ND_survey_filename xyz_survey.txt
+
+#------------------------------------------
+# Geometry definition (not yet working)
+#------------------------------------------
+/ds/detector/red/TPCPosition -138.496 cm
+/ds/detector/red/TPCThetaX 18.8 deg
+/ds/detector/red/TPCPhiX -12.75 deg
+#
+#------------------------------------------
+# Generator selection
+#------------------------------------------
+#/ds/generator/select G4Gun
+#/ds/generator/particle neutron
+#/ds/generator/energy 8.4 MeV
+#/ds/generator/position -138.496 31.3385 48.3399 cm
+#/ds/generator/direction 138.496 -31.3385 -48.3399
+#
+/ds/generator/select ReD
+/ds/generator/red/PrimaryBeam/source Li7
+/ds/generator/red/PrimaryBeam/energy 30 MeV
+
+/ds/generator/red/NeutronBeam/opening 2 deg
+/ds/generator/red/NeutronBeam/ThetaX 18.8 deg
+/ds/generator/red/NeutronBeam/PhiX -12.75 deg
+
+/gps/position -138.496 31.3385 48.3399 cm
+/gps/direction 138.496 -31.3385 -48.3399
+
+# using the geantino
+/ds/generator/red/PrimaryBeam/source geantino
+/ds/generator/red/NeutronBeam/opening 0 deg
+
+#------------------------------------------
+# Ion shooting (not yet working)
+#------------------------------------------
+#/gps/verbose 1
+#/gps/particle ion
+#/gps/ion 3 7
+#/gps/pos/type Beam
+#/gps/pos/centre -167.8 31.4 48.3399 cm
+#
+#------------------------------------------
+/run/initialize
+#------------------------------------------
+
+#PostInit:
+
+#------------------------------------------
+# Visualization attributes
+#------------------------------------------
+#
+/vis/open OGL 600x600-0+0
+#/vis/sceneHandler/create VRML2FILE
+#/vis/viewer/create
+/vis/viewer/set/autoRefresh false
+/vis/verbose errors
+/vis/viewer/set/auxiliaryEdge true
+/vis/drawVolume
+/vis/viewer/zoom 1.4
+#/vis/scene/add/axes 0 0 0 3.5 m
+/vis/scene/add/axes 0 0 0 10 cm
+/vis/scene/add/trajectories smooth
+/vis/scene/endOfEventAction accumulate
+/vis/viewer/set/autoRefresh true
+/vis/verbose warnings
+#
+# Define the number of events!
+# Attention: benchmark with fewer events first before running >1M!
+# On my desktop (pcglast56), a setup with Aris like cryostat (99), 100M events,
+# neutron angle 20 deg wr to floor and scattering angle 40 deg, 8LScis needs:
+# regular material: 15.5h CPU, 72 GB fil
+# active regions only: 4h CPU, 14 GB fil
+#
+#
+#/run/initialize
+/ds/stack/select ReD
+#
+#           G..M..k...
+/run/beamOn          1
+#           G..M..k...

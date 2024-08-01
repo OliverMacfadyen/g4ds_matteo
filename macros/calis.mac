@@ -1,0 +1,54 @@
+##########################################################
+#                                                        #
+#              CALIS geometry  Macro                     #
+#                                                        #
+##########################################################
+
+/ds/manager/log trace
+/ds/manager/verbosity -1
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 1000
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 0
+
+
+#Detector configuration: TPC+NV+WT (0) - TPC+NW (1) - TPC (2) - NV+WT (3) - Tester (4) - TPC_DS10 (5)
+/ds/detector/configuration ds50_full
+#deactivate scintillation in veto
+/ds/detector/vetoyieldfactor 0.0
+
+/run/filename outcalis
+
+/run/heprandomseed 12345
+
+#Define the hadronic physics list (none HP Shielding QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list none
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+/ds/physics/optics 3
+#/ds/physics/killS1 1
+/ds/physics/killS1S2 1
+
+#/ds/physics/DriftField 1 kV/cm
+#/ds/physics/ExtractionField 2.8 kV/cm
+/ds/physics/tuned200V         1
+
+#place the source holder before initalize (TPC center along z: -3.5 cm, cuyostat radius: 32 cm.
+#The soureholder is 8 cm long, so account for 4 additional cm)
+#/ds/detector/holderZ -3.5 cm
+#/ds/detector/holderRadius 32. cm
+#/ds/detector/holderPhi 0.
+/ds/detector/sourceholdercenter 0 36 -1 cm
+
+/run/initialize
+
+/ds/generator/select RDM
+/ds/stack/select RDM
+
+/ds/generator/holderSource_on 1
+/ds/generator/rdm/ion 57 27 0
+
+# Define the number of events
+/run/beamOn 30000

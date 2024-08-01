@@ -1,0 +1,79 @@
+##########################################################
+#                                                        #
+#            DS20K LSV Simulation                        #
+#                                                        #
+##########################################################
+
+
+#PreInit:
+
+#  Define the level of verbosity of messages
+# options: debugging, development, trace, routine, warning, error
+# default: routine
+/ds/manager/log trace
+/ds/manager/verbosity 0
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 1
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 0
+/ds/manager/writedaughters 0
+
+#Define if geometry has to be exported in GDML file geo.root
+/ds/manager/GDML 0
+
+# Detector configurations:
+# ds50_full ds50_tpc_veto ds50_tpc ds20k ds20k_tpc dsproto dsproto0 red_tpc dart ardm tester
+
+/ds/manager/TMB_fraction 0.05
+/ds/detector/configuration ds50_tpc_veto
+#/ds/detector/wt_material Water
+#/ds/detector/ds20lsv_detector 1
+#/ds/detector/ds20lsv_diameter 7 m
+# PMT Type: 1 -> 8 inches, 2-> 20 inches
+#/ds/detector/ds20lsv_pmt 1
+/ds/detector/ExtLarScintillating 0
+/ds/detector/vetoyieldfactor 1.0
+
+
+# Define output file name
+/run/filename out_ds50lsv
+
+# Define  random seed
+/run/heprandomseed 127667
+
+#Define the hadronic physics list (none QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list none
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+/ds/physics/optics 3
+/ds/physics/LSoptics 2
+/ds/physics/tuned200V   1
+/ds/physics/killS1S2 1
+
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+#PostInit:
+
+
+/ds/generator/select G4Gun
+
+/ds/generator/particle  e-
+#/ds/generator/dist_energy Lin
+#/ds/generator/gradient 0
+#/ds/generator/intercept 1.
+#/ds/generator/emin 40 keV
+#/ds/generator/emax 2 MeV
+/ds/generator/energy  500 keV
+
+/ds/generator/liquidscintillator 1
+#/ds/generator/surface_radius 40 cm
+#/ds/generator/sphere_radius 5 cm
+#/ds/generator/set_center  0. 50 0. cm
+
+# Define the number of events
+/run/beamOn 10

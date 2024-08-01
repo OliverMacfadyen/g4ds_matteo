@@ -1,0 +1,78 @@
+##########################################################
+#                                                        #
+#                   Multi Event Macro                    #
+#                                                        #
+##########################################################
+
+# PDG particle codes
+#
+# e-    = 11
+# e+    = -11
+# gamma = 22
+# p     = 2212
+# n     = 2112
+# alpha = 1000020040
+# mu-   = 13
+
+
+#  Define the level of verbosity of messages
+# options: debugging, development, trace, routine, warning, error
+# default: routine
+#/ds/manager/log trace
+/ds/manager/log trace
+/ds/manager/verbosity -1
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 1000
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 0
+
+#Define if geometry has to be exported in GDML file geo.root
+/ds/manager/GDML 0
+
+# Detector configurations:
+# ds50_full ds50_tpc_veto ds50_tpc ds20k ds20k_tpc dsproto dsproto0 red_tpc dart ardm tester
+
+/ds/detector/configuration ds20k
+
+
+# Define output file name
+/run/filename outmulti
+
+# Define  random seed
+/run/heprandomseed 12345679
+
+#Define the hadronic physics list (none QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list none
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+/ds/physics/killS2 1
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+#PostInit:
+
+
+
+/ds/generator/select MultiEvent
+
+/ds/generator/tpcdistribution 1
+
+#/ds/generator/multi/event     ID BRTOT  PDG  ENE    BR
+
+#Co57
+#/ds/generator/multi/event      1  0.89   22   0.122    3.
+#/ds/generator/multi/event      1  0.89   22   0.014    1.
+#/ds/generator/multi/event      2  0.11   22   0.136    1.
+
+#Ce139
+/ds/generator/multi/event      1  1   11   0.0094    1.
+/ds/generator/multi/event      1  1   11   0.0321    1.
+
+
+# Define the number of events
+/run/beamOn 1000

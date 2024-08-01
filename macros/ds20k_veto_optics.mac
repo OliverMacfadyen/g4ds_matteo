@@ -1,0 +1,70 @@
+##########################################################
+#                                                        #
+#       DS20K Neutron Veto Optics Simulation             #
+#                                                        #
+##########################################################
+
+
+#PreInit:
+
+#  Define the level of verbosity of messages
+# options: debugging, development, trace, routine, warning, error
+# default: routine
+/ds/manager/log routine
+/ds/manager/verbosity 0
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 1
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 0
+
+
+# Detector configurations:
+# ds50_full ds50_tpc_veto ds50_tpc ds20k ds20k_tpc dsproto dsproto0 red_tpc dart ardm tester
+
+/ds/detector/configuration ds20k
+
+#DS20k: approximated number of vPDUs in the Veto. "100" is the default and it will build 120 vPDUs
+/ds/detector/ds20k_SiPMsNumber 100
+
+#(de)activate the scintillation in the LAr veto with (0 or) 1
+/ds/detector/vetoyieldfactor 1
+
+#activate the actual placement of the vPDUs
+/ds/detector/ds20k_SiPMs 1
+
+# Define output file name
+/run/filename outDS20k_veto_optics
+
+# Define  random seed
+/run/heprandomseed 127667
+
+#Define the hadronic physics list (none QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list none
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+/ds/physics/optics 3
+
+/ds/physics/tuned200V   1
+/ds/physics/killS1S2 1
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+#PostInit:
+/ds/generator/select G4Gun
+
+/ds/generator/particle e-
+/ds/generator/energy 0.3 MeV
+
+#argonbufferoutside is the UAr volume filling the Ti vessel outside the TPC
+/ds/generator/argonbufferoutside 1
+#/ds/generator/bgd_reflector 1
+#/ds/generator/plasticscintillator 1
+#/ds/generator/bgd_veto_sipm 1
+
+# Define the number of events
+/run/beamOn 100

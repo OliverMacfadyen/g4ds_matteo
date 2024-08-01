@@ -1,0 +1,6 @@
+cd $G4DS/tools
+
+g++ g4rootered_PET.C -o g4PETrooter `root-config --cflags --glibs`
+echo 'g4PETrooter compiled....'
+
+cd $PWD

@@ -1,0 +1,51 @@
+##########################################################
+#                                                        #
+#                   Deposit Generator                    #
+#                                                        #
+##########################################################
+
+#PreInit:
+
+#  Define the level of verbosity of messages
+# options: debugging, development, trace, routine, warning, error
+# default: routine
+/ds/manager/log routine
+/ds/manager/verbosity 0
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 1000
+/ds/manager/writedeposits 1
+
+
+/ds/detector/configuration ds20k
+
+# Define output file name
+/run/filename outfile
+
+# Define  random seed
+/run/heprandomseed 12345679
+
+#Define the hadronic physics list (none QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list none
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+
+/ds/physics/killS2 1
+
+
+
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+#PostInit:
+
+
+/ds/generator/select EnergyDeposit
+
+/ds/generator/endep/file /sps/nusol/pagnes/uAr/montecarlo/g4ds10/Linux-g++/co60cryo/co60cryo.fil
+
+# Define the number of events
+/run/beamOn 200000

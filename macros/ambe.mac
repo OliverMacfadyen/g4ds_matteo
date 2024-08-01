@@ -1,0 +1,74 @@
+##########################################################
+#                                                        #
+#                   AmBeSource Standard Macro                 #
+#                                                        #
+##########################################################
+
+
+#PreInit:
+
+#  Define the level of verbosity of messages
+# options: debugging, development, trace, routine, warning, error
+# default: routine
+/ds/manager/log development
+/ds/manager/log trace
+/ds/manager/verbosity -1
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 1000
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 0
+#/ds/manager/optics_tuning ../data/detector/DSOptics.dat
+
+#Detector configuration: TPC+NV+WT (0) - TPC+NW (1) - TPC (2) - NV+WT (3) - Tester (4) - TPC_DS10 (5)
+/ds/detector/configuration ds50_full
+
+#/ds/physics/optics 2
+#/ds/physics/HPRangeCuts false
+
+
+# Define output file name
+/run/filename output/ambeTest
+
+# Define  random seed
+/run/heprandomseed 12345679
+
+#Define the hadronic physics list (none HP Shielding QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list HP
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+/ds/physics/optics 0
+#/ds/physics/killS1S2 1
+#/ds/physics/killS2 1
+#/ds/physics/scaleS2 3
+#/ds/physics/DriftField 1 kV/cm
+#/ds/physics/ExtractionField 2.8 kV/cm
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+#PostInit:
+
+/ds/generator/select AmBeSource
+
+#Must select source type (all, neutron0G, neutron1G, neutron2G)
+/ds/generator/AmBe/source all
+#disable either the production of n or gamma:
+#/ds/generator/AmBe/disable n
+#/ds/generator/AmBe/disable gamma
+#the disabling is useful if you want to study the neutron interactions without contamination by the gammas and with the correct neutron energy spectrum
+#one disable command overwrites the other, since disabling both does not make sense!
+
+
+#/ds/generator/energy   100 keV
+#/ds/generator/position  0 1 0 m
+#/ds/generator/direction 0.0 -1.0 0.0
+/ds/generator/sphere_radius 1 mm
+/ds/generator/set_center 0. 100. 0. cm
+
+
+# Define the number of events
+/run/beamOn 10000

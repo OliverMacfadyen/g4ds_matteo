@@ -1,0 +1,122 @@
+##########################################################
+#                                                        #
+#            DS20K Neutron Bg Simulation                 #
+#                                                        #
+##########################################################
+
+
+#PreInit:
+
+#  Define the level of verbosity of messages
+# options: debugging, development, trace, routine, warning, error
+# default: routine
+/ds/manager/log routine
+/ds/manager/verbosity 0
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 1000
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 1
+/ds/manager/scint_mass_fraction 0.0
+
+
+# Detector configurations:
+# ds50_full ds50_tpc_veto ds50_tpc ds20k ds20k_tpc dsproto dsproto0 red_tpc dart ardm tester
+
+/ds/detector/configuration ds20k
+/ds/detector/vetoyieldfactor 0.0
+
+/ds/detector/gantry/pipe_height 150. cm
+/ds/detector/gantry/pipe_thickness 5.4 mm
+/ds/detector/gantry/pipe_radius 5.2 cm
+/ds/detector/gantry/pipe_distance_center 189 cm
+
+/ds/physics/hadronic_list HP
+
+# Define output file name
+/run/filename gantry_out
+
+# Define  random seed
+/run/heprandomseed 127667
+
+#Define the hadronic physics list (none QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list none
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+/ds/physics/optics 3
+
+/ds/physics/tuned200V   1
+/ds/physics/killS1S2 1
+
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+/ds/generator/select RDM
+/ds/stack/select RDM
+#Co57
+/ds/generator/rdm/ion 57 27 0
+
+#/ds/generator/select G4Gun
+#/ds/generator/particle  gamma
+#/ds/generator/energy    60. keV
+
+/ds/generator/sphere_radius 0.1 mm
+/ds/generator/set_center 0 189 148. cm
+
+#PostInit:
+
+
+#/ds/generator/select G4Gun
+#/ds/generator/particle  geantino
+
+#/ds/generator/direction  0 1 0
+#/ds/generator/position   0 0 0 cm
+#/ds/generator/energy   2.6 MeV
+
+
+
+#/ds/generator/energy  0.1 eV
+
+
+#/ds/generator/bgd_reflector 1
+#/ds/generator/argonbufferinside 1
+#/ds/generator/argonbufferoutside 1
+#/ds/generator/plasticscintillator 1
+#/ds/generator/bgd_veto_sipm 1
+#/ds/generator/bgd_windows
+#/ds/generator/bgd_pmt_photocathode
+#/ds/generator/liquidargon
+#/ds/generator/bgd_cryostats 1
+#/ds/generator/bgd_sipm 1
+#/ds/generator/bgd_pmt_stem 1
+#/ds/generator/bgd_rings 1
+#/ds/generator/bgd_grid 1
+#/ds/generator/gaspocketdistribution
+#/ds/generator/tpcdistribution 1
+
+
+
+#/ds/generator/energyfile  ../data/physics/U238Teflon.dat
+
+#/ds/generator/energyfile ../data/physics/U238BoroSilicate.dat
+#/ds/generator/energyfile ../data/physics/Th232Teflon.dat
+#/ds/generator/energyfile ../data/physics/Th232StainlessSteel.dat
+#/ds/generator/energyfile ../data/physics/Th232FusedSilica.dat
+#/ds/generator/energyfile ../data/physics/Th232BoroSilicate.dat
+#/ds/generator/energyfile ../data/physics/U238U235Th232StainlessSteel.dat
+#/ds/generator/energyfile ../data/physics/U238Teflon.dat
+#/ds/generator/energyfile ../data/physics/U238StainlessSteel.dat
+#/ds/generator/energyfile ../data/physics/U238FusedSilica.dat
+
+/vis/scene/create
+/vis/open OGL 600x600-0+0
+/vis/sceneHandler/attach
+/vis/scene/add/trajectories
+/vis/scene/add/axes 0 0
+
+# Define the number of events
+#/run/beamOn 1

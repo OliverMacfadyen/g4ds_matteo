@@ -1,0 +1,47 @@
+#######################################
+#                                     #
+#         Basic G4DS  Macro           #
+#                                     #
+#######################################
+
+#  Define the level of verbosity of messages
+# options: debugging, development, trace, routine, warning, error
+# default: routine
+/ds/manager/log trace
+/ds/manager/verbosity 0
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 10
+/ds/manager/writephotons 0
+/ds/manager/writedeposits 1
+/ds/manager/writedaughters 0
+
+# Detector configurations:
+# ds50_full ds50_tpc_veto ds50_tpc ds20k ds20k_tpc dsproto dsproto0 red_tpc dart ardm tester
+
+/ds/detector/configuration ds20k
+
+
+# Define output file name
+/run/filename bg_sn_30s_10ms_clus_s1
+
+# Define  random seed
+/run/heprandomseed 12345679
+
+#Define the hadronic physics list (none HP QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list none
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+/ds/physics/killS2 1
+/ds/detector/vetoyieldfactor 0.0
+
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+/ds/generator/select EnergyDeposit
+/ds/generator/endep/file ds20k_data/bg_sn_30s_10ms_clus.fil 
+
+
+# Define the number of events
+/run/beamOn 3000

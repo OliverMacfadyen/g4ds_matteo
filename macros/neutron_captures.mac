@@ -1,0 +1,56 @@
+##########################################################
+#                                                        #
+#                   G4Gun Standard Macro                 #
+#                                                        #
+##########################################################
+
+
+#PreInit:
+
+#  Define the level of verbosity of messages
+# options: debugging, development, trace, routine, warning, error
+# default: routine
+/ds/manager/log trace
+/ds/manager/verbosity 1
+/ds/manager/checkoverlap 0
+/ds/manager/eventcounter 10
+/ds/manager/writedeposits 1
+
+
+# Detector configurations:
+# ds50_full ds50_tpc_veto ds50_tpc ds20k ds20k_tpc dsproto dsproto0 red_tpc dart ardm tester
+
+/ds/detector/configuration ds20k
+
+
+# Define output file name
+/run/filename out_neutrons
+
+# Define  random seed
+/run/heprandomseed 12345679
+
+#Define the hadronic physics list (none QGSP_BERT_HP QGSP_BIC_HP FTF_BIC_HP FTFP_BERT_HP)
+/ds/physics/hadronic_list QGSP_BERT_HP
+
+#Define the EM physics list (standard livermore)
+/ds/physics/em_list livermore
+
+/ds/physics/killS1S2 1
+/ds/detector/vetoyieldfactor 0.0
+#-----------------------------------
+/run/initialize
+#-----------------------------------
+
+#PostInit:
+
+/ds/generator/select G4Gun
+/ds/stack/select NeutronCapture
+
+/ds/generator/particle neutron
+/ds/generator/direction 0 0 1
+/ds/generator/position 0 0 0 cm
+/ds/generator/energy 2000 keV
+
+
+# Define the number of events
+/run/beamOn 1000
